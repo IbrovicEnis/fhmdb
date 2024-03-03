@@ -27,11 +27,12 @@ public class HomeController implements Initializable {
     public JFXListView<Movie> movieListView;
 
     @FXML
-    public JFXComboBox genreComboBox;
+    public JFXComboBox<Movie.Genre> genreComboBox;
 
     @FXML
     public JFXButton sortBtn;
     private boolean ascendingOrder = true; // Variable to track sorting order
+
     @FXML
     private void handleSortButton(ActionEvent event) {
         if (ascendingOrder) {
@@ -45,46 +46,38 @@ public class HomeController implements Initializable {
         ascendingOrder = !ascendingOrder; // Toggle the sorting order
     }
 
-
-
-
     public List<Movie> allMovies = Movie.initializeMovies();
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
+    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+
     @FXML
     private void handleFilterByGenre(ActionEvent event) {
-        Movie.Genre selectedGenre = (Movie.Genre) genreComboBox.getValue();
+        Movie.Genre selectedGenre = genreComboBox.getValue();
         String searchText = searchField.getText().trim().toLowerCase();
 
-        // Use a Set to store unique movies based on filtering criteria
-        Set<Movie> uniqueMovies = new HashSet<>();
+        Set<Movie> uniqueMovies = allMovies.stream()
+                .filter(movie -> (selectedGenre == null || movie.getGenres().contains(selectedGenre))
+                        && (searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText)))
+                .collect(Collectors.toSet());
 
-        for (Movie movie : allMovies) {
-            if ((selectedGenre == null || movie.getGenres().contains(selectedGenre))
-                    && (searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText))) {
-                uniqueMovies.add(movie);
-            }
-        }
-
-        // Clear the observableMovies list before adding the filtered movies
-        observableMovies.clear();
-        observableMovies.addAll(uniqueMovies);
+        observableMovies.setAll(uniqueMovies);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        observableMovies.addAll(allMovies); // Add dummy data to observable list
-        movieListView.setItems(observableMovies); // Set data of observable list to list view
-        movieListView.setCellFactory(movieListView -> new MovieCell()); // Use custom cell factory to display data
 
-        // Add genre filter items to combo box
+        observableMovies.addAll(allMovies);
+        movieListView.setItems(observableMovies);
+        movieListView.setCellFactory(movieListView -> new MovieCell());
+
         genreComboBox.getItems().addAll(Movie.Genre.values());
+        genreComboBox.getItems().add(0, null); // Add an empty item as a placeholder
         genreComboBox.setPromptText("Filter by Genre");
 
-        // Set event handler for combo box selection change
         genreComboBox.setOnAction(event -> handleFilterByGenre((ActionEvent) event));
     }
-
 }
+
+
 /*   Sort button example:
         sortBtn.setOnAction(actionEvent -> {
             if(sortBtn.getText().equals("Sort (asc)")) {

@@ -121,7 +121,7 @@ public class Movie {
 
 // Movie 15
         Movie movie15 = new Movie("The Silence of the Lambs", "A suspenseful crime thriller",
-                Arrays.asList(Genre.HORROR));
+                List.of(Genre.HORROR));
         movies.add(movie15);
 
 // Movie 16

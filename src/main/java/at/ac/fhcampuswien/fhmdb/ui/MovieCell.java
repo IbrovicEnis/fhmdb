@@ -21,6 +21,13 @@ public class MovieCell extends ListCell<Movie> {
         if (empty || movie == null) {
             setText(null);
         } else {
+            // Reset any properties that might be affected by cell reuse
+            title.setText("");
+            detail.setText("");
+            layout.setBackground(null);
+            title.getStyleClass().clear();
+            detail.getStyleClass().clear();
+
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
             detail.setText(
