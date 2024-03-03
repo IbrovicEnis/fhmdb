@@ -44,15 +44,20 @@ public class HomeController implements Initializable {
 
         ascendingOrder = !ascendingOrder; // Toggle the sorting order
     }
+
+
+
+
+    public List<Movie> allMovies = Movie.initializeMovies();
+    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
     @FXML
     private void handleFilterByGenre(ActionEvent event) {
         Movie.Genre selectedGenre = (Movie.Genre) genreComboBox.getValue();
         String searchText = searchField.getText().trim().toLowerCase();
 
-        // Create a set to store unique movies
+        // Use a Set to store unique movies based on filtering criteria
         Set<Movie> uniqueMovies = new HashSet<>();
 
-        // Filter movies based on selected genre and search text
         for (Movie movie : allMovies) {
             if ((selectedGenre == null || movie.getGenres().contains(selectedGenre))
                     && (searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText))) {
@@ -60,11 +65,10 @@ public class HomeController implements Initializable {
             }
         }
 
-        // Update the observableMovies with the filtered list (without duplicates)
-        observableMovies.setAll(uniqueMovies);
+        // Clear the observableMovies list before adding the filtered movies
+        observableMovies.clear();
+        observableMovies.addAll(uniqueMovies);
     }
-    public List<Movie> allMovies = Movie.initializeMovies();
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();   // automatically updates corresponding UI elements when underlying data changes
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

@@ -72,12 +72,12 @@ public class Movie {
         movies.add(movie4);
 
         // Movie 5
-        Movie movie5 = new Movie("The Fault in Our Stars", "A heartfelt drama with a touch of romance",
+        Movie movie5 = new Movie("The Fault in Our Stars", "A heartfelt drama with a touch of a love story",
                 Arrays.asList(Genre.DRAMA, Genre.ROMANCE));
         movies.add(movie5);
 
         // Movie 6
-        Movie movie6 = new Movie("Pride and Prejudice", "A classic romantic drama",
+        Movie movie6 = new Movie("Pride and Prejudice", "A classic drama in love",
                 Arrays.asList(Genre.DRAMA, Genre.ROMANCE));
         movies.add(movie6);
         // Movie 7
