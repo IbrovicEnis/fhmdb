@@ -34,7 +34,7 @@ class HomeControllerTest {
     }
 
     @Test
-    void test_if_filtering_only_genre_returns_correct_movies() {
+    void test_if_filtering_only_genre_returns_correct_movies_that_contain_that_genre() {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.CRIME, "");
         assertEquals(1, result.size(), "Die Anzahl der gefilterten Filme nach Genre CRIME sollte 1 sein.");
         assertTrue(result.get(0).getGenres().contains(Movie.Genre.CRIME), "Der Film sollte das Genre CRIME enthalten.");
@@ -45,8 +45,16 @@ class HomeControllerTest {
     void test_if_filtering_only_text_returns_correct_movies() {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ALL, "superhero");
         assertEquals(1, result.size());
-        assertTrue(result.get(0).getDescription().contains("superhero"));
+        assertTrue(result.get(0).getDescription().contains("superhero") ||result.get(0).getTitle().contains("superhero") );
     }
+
+    @Test
+    void test_if_filtering_genre_and_text_returns_correct_movies() {
+        List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "superhero");
+        assertEquals(1, result.size());
+        assertTrue((result.get(0).getDescription().contains("superhero") ||result.get(0).getTitle().contains("superhero")) &&  result.get(0).getGenres().contains(Movie.Genre.ACTION));
+    }
+
 
 
 
