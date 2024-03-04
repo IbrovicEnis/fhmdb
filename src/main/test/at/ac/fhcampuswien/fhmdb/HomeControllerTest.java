@@ -41,7 +41,6 @@ class HomeControllerTest {
     }
 
 
-    // noch nicht fertig
     @Test
     void test_if_filtering_only_text_returns_correct_movies() {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ALL, "superhero");

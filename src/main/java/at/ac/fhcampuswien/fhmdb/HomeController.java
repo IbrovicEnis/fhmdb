@@ -54,7 +54,9 @@ public class HomeController implements Initializable {
         List<Movie> filteredMovies = new ArrayList<>();
         for (Movie movie : movies) {
             boolean matchesGenre = genre == null || genre == Movie.Genre.ALL || movie.getGenres().contains(genre);
-            boolean matchesSearchText = searchText == null || searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText.toLowerCase());
+            boolean matchesSearchText = searchText == null || searchText.isEmpty()
+                    || movie.getTitle().toLowerCase().contains(searchText.toLowerCase())
+                    || movie.getDescription().toLowerCase().contains(searchText.toLowerCase());
 
             if (matchesGenre && matchesSearchText) {
                 filteredMovies.add(movie);
@@ -62,6 +64,7 @@ public class HomeController implements Initializable {
         }
         return filteredMovies;
     }
+
 
     private void applyFilters() {
         Movie.Genre selectedGenre = genreComboBox.getValue();
