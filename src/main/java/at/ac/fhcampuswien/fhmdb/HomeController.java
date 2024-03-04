@@ -62,11 +62,13 @@ public class HomeController implements Initializable {
                 filteredMovies.add(movie);
             }
         }
+
         return filteredMovies;
     }
 
 
     private void applyFilters() {
+
         Movie.Genre selectedGenre = genreComboBox.getValue();
         String searchText = searchField.getText().trim();
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchText);
