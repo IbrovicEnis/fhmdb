@@ -56,20 +56,40 @@ public class Movie {
                 Arrays.asList(Genre.ACTION, Genre.FANTASY));
         movies.add(movie1);
 
-        // Movie 2
-        Movie movie2 = new Movie("The Dark Knight", "A superhero action-adventure",
-                Arrays.asList(Genre.CRIME, Genre.ACTION));
-        movies.add(movie2);
-
         // Movie 3
-        Movie movie3 = new Movie("Jurassic Park", "An adventurous sci-fi journey with dinosaurs",
-                Arrays.asList(Genre.SCIENCE_FICTION, Genre.ACTION));
+        Movie movie3 = new Movie("Interstellar", "A journey beyond the stars",
+                Arrays.asList(Movie.Genre.SCIENCE_FICTION, Movie.Genre.DRAMA));
         movies.add(movie3);
+
+        // Movie 4
+        Movie movie4 = new Movie("The Grand Budapest Hotel", "A visually stunning caper",
+                Arrays.asList(Movie.Genre.COMEDY, Movie.Genre.DRAMA));
+        movies.add(movie4);
+
+        // Movie 5
+        Movie movie5 = new Movie("Mad Max: Fury Road", "A post-apocalyptic action film",
+                Arrays.asList(Movie.Genre.ACTION, Movie.Genre.ADVENTURE));
+        movies.add(movie5);
+
+        // Movie 6
+        Movie movie6 = new Movie("La La Land", "A musical romantic drama",
+                Arrays.asList(Movie.Genre.MUSICAL, Movie.Genre.DRAMA));
+        movies.add(movie6);
+
+        // Movie 7
+        Movie movie7 = new Movie("Parasite", "A dark twist on a family's dream for a better life",
+                Arrays.asList(Movie.Genre.THRILLER, Movie.Genre.DRAMA));
+        movies.add(movie7);
+
+        // Movie 8
+        Movie movie8 = new Movie("Joker", "A gritty character study of the iconic villain",
+                Arrays.asList(Movie.Genre.CRIME, Movie.Genre.DRAMA));
+        movies.add(movie8);
 
         return movies;
     }
     public enum Genre {
-        ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY,
+        ALL,ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY,
         CRIME, DRAMA, DOCUMENTARY, FAMILY, FANTASY,
         HISTORY, HORROR, MUSICAL, MYSTERY, ROMANCE,
         SCIENCE_FICTION, SPORT, THRILLER, WAR, WESTERN

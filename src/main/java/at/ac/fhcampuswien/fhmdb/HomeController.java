@@ -49,21 +49,24 @@ public class HomeController implements Initializable {
         ascendingOrder = !ascendingOrder; // Toggle the sorting order
     }
 
-    private void filterMovies() {
+    public List<Movie> filterMovies(List<Movie> movies, Movie.Genre genre, String searchText) {
 
-        Movie.Genre selectedGenre = genreComboBox.getValue();
-        String searchText = searchField.getText().trim().toLowerCase();
-
-        ArrayList<Movie> filteredMovies = new ArrayList<>();
-        for (Movie movie : allMovies) {
-            boolean matchesGenre = selectedGenre == null || movie.getGenres().contains(selectedGenre);
-            boolean matchesSearchText = searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText);
+        List<Movie> filteredMovies = new ArrayList<>();
+        for (Movie movie : movies) {
+            boolean matchesGenre = genre == null || genre == Movie.Genre.ALL || movie.getGenres().contains(genre);
+            boolean matchesSearchText = searchText == null || searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText.toLowerCase());
 
             if (matchesGenre && matchesSearchText) {
                 filteredMovies.add(movie);
             }
         }
+        return filteredMovies;
+    }
 
+    private void applyFilters() {
+        Movie.Genre selectedGenre = genreComboBox.getValue();
+        String searchText = searchField.getText().trim();
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchText);
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
@@ -78,7 +81,7 @@ public class HomeController implements Initializable {
         genreComboBox.getItems().addAll(Movie.Genre.values());
         genreComboBox.setPromptText("Filter by Genre");
 
-        searchBtn.setOnAction(event -> filterMovies());
+        searchBtn.setOnAction(event -> applyFilters());
 
     }
 }
