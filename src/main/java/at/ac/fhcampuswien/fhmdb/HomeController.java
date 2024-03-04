@@ -33,6 +33,9 @@ public class HomeController implements Initializable {
     public JFXButton sortBtn;
     private boolean ascendingOrder = true; // Variable to track sorting order
 
+    public List<Movie> allMovies = Movie.initializeMovies();
+    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+
     @FXML
     private void handleSortButton(ActionEvent event) {
         if (ascendingOrder) {
@@ -46,20 +49,23 @@ public class HomeController implements Initializable {
         ascendingOrder = !ascendingOrder; // Toggle the sorting order
     }
 
-    public List<Movie> allMovies = Movie.initializeMovies();
-    private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
+    private void filterMovies() {
 
-    @FXML
-    private void handleFilterByGenre(ActionEvent event) {
         Movie.Genre selectedGenre = genreComboBox.getValue();
         String searchText = searchField.getText().trim().toLowerCase();
 
-        Set<Movie> uniqueMovies = allMovies.stream()
-                .filter(movie -> (selectedGenre == null || movie.getGenres().contains(selectedGenre))
-                        && (searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText)))
-                .collect(Collectors.toSet());
+        ArrayList<Movie> filteredMovies = new ArrayList<>();
+        for (Movie movie : allMovies) {
+            boolean matchesGenre = selectedGenre == null || movie.getGenres().contains(selectedGenre);
+            boolean matchesSearchText = searchText.isEmpty() || movie.getTitle().toLowerCase().contains(searchText);
 
-        observableMovies.setAll(uniqueMovies);
+            if (matchesGenre && matchesSearchText) {
+                filteredMovies.add(movie);
+            }
+        }
+
+        observableMovies.clear();
+        observableMovies.addAll(filteredMovies);
     }
 
     @Override
@@ -70,10 +76,10 @@ public class HomeController implements Initializable {
         movieListView.setCellFactory(movieListView -> new MovieCell());
 
         genreComboBox.getItems().addAll(Movie.Genre.values());
-        genreComboBox.getItems().add(0, null); // Add an empty item as a placeholder
         genreComboBox.setPromptText("Filter by Genre");
 
-        genreComboBox.setOnAction(event -> handleFilterByGenre((ActionEvent) event));
+        searchBtn.setOnAction(event -> filterMovies());
+
     }
 }
 

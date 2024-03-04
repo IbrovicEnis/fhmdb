@@ -20,6 +20,7 @@ public class MovieCell extends ListCell<Movie> {
 
         if (empty || movie == null) {
             setText(null);
+            setGraphic(null);
         } else {
             // Reset any properties that might be affected by cell reuse
             title.setText("");
