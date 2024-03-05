@@ -97,38 +97,20 @@ public class HomeControllerTest {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "invalid text");
         assertEquals(0, result.size(), "The number of filtered movies should be 0 when the search text does not match any movie.");
     }
-   /* @Test
-    void testInitialize() {
-        // Call initializeMovies to populate allMovies
+   /*@Test
+    void test_initialize() {
         controller.allMovies = HomeController.initializeMovies();
-
-        // Call initialize to set up the UI components
         controller.initialize(null, null);
-
-        // Check that observableMovies has been populated correctly
         assertEquals(controller.allMovies.size(), controller.observableMovies.size());
-
-        // Check that movieListView has been set up correctly
         assertEquals(controller.observableMovies, controller.movieListView.getItems());
-
-        // Check that genreComboBox has been set up correctly
         assertEquals(Arrays.asList(Movie.Genre.values()), controller.genreComboBox.getItems());
-
-        // Check that searchBtn has an action set
         assertNotNull(controller.searchBtn.getOnAction());
     }
     @Test
-    void testUpdateItem() {
-        // Create a new MovieCell
+    void test_updateItem() {
         MovieCell cell = new MovieCell();
-
-        // Create a new Movie
         Movie movie = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
-
-        // Call updateItem
         cell.updateItem(movie, false);
-
-        // Check that the labels have been set correctly
         assertEquals("Inception", cell.titleLabel.getText());
         assertEquals("A mind-bending action-adventure", cell.descriptionLabel.getText());
         assertEquals("[ACTION, FANTASY]", cell.genreLabel.getText());
