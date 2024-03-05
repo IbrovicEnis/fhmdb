@@ -8,7 +8,6 @@ import java.util.Objects;
 public class Movie {
     private String title;
     private String description;
-    // TODO add more properties here
     private List<Genre> genres;
     public Movie(String title, String description, List<Genre> genres) {
         if (title == null || title.trim().isEmpty()) {

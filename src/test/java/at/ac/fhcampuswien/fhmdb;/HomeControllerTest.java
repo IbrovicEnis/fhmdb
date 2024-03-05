@@ -1,12 +1,14 @@
 import at.ac.fhcampuswien.fhmdb.HomeController;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import javafx.event.ActionEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public class HomeControllerTest {
 
@@ -53,8 +55,46 @@ public class HomeControllerTest {
         assertEquals(1, result.size());
         assertTrue((result.get(0).getDescription().contains("superhero") ||result.get(0).getTitle().contains("superhero")) &&  result.get(0).getGenres().contains(Movie.Genre.ACTION));
     }
+    @Test
+    void test_sorting_button_by_title() {
 
+            // Sort allMovies in ascending order
+            controller.allMovies.sort(Comparator.comparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER));
 
+            // Check the order of the items in allMovies
+            assertEquals("Inception", controller.allMovies.get(0).getTitle());
+            assertEquals("Parasite", controller.allMovies.get(1).getTitle());
+            assertEquals("The Dark Knight", controller.allMovies.get(2).getTitle());
+
+            // Sort allMovies in descending order
+            controller.allMovies.sort(Comparator.comparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER).reversed());
+
+            // Check the order of the items in allMovies
+            assertEquals("The Dark Knight", controller.allMovies.get(0).getTitle());
+            assertEquals("Parasite", controller.allMovies.get(1).getTitle());
+            assertEquals("Inception", controller.allMovies.get(2).getTitle());
+        }
+    @Test
+    void test_filtering_with_empty_input() {
+        List<Movie> result = controller.filterMovies(new ArrayList<>(), Movie.Genre.ACTION, "");
+        assertEquals(0, result.size(), "The number of filtered movies should be 0 when the input list is empty.");
+    }
+    @Test
+    void test_filtering_if_null_input() {
+        List<Movie> result = controller.filterMovies(null, Movie.Genre.ACTION, "");
+        assertNull(result, "The result should be null when the input list is null.");
+    }
+    @Test
+    void test_filtering_with_single_movie() {
+        List<Movie> singleMovieList = Collections.singletonList(new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY)));
+        List<Movie> result = controller.filterMovies(singleMovieList, Movie.Genre.ACTION, "");
+        assertEquals(1, result.size(), "The number of filtered movies should be 1 when the input list contains a single movie of the specified genre.");
+    }
+    @Test
+    void test_filtering_with_invalid_input() {
+        List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "invalid text");
+        assertEquals(0, result.size(), "The number of filtered movies should be 0 when the search text does not match any movie.");
+    }
 
 
 }

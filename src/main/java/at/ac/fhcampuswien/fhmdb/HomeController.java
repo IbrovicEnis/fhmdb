@@ -50,7 +50,10 @@ public class HomeController implements Initializable {
     }
 
     public List<Movie> filterMovies(List<Movie> movies, Movie.Genre genre, String searchText) {
-
+        // Check if movies is null
+        if (movies == null) {
+            return null;
+        }
         List<Movie> filteredMovies = new ArrayList<>();
         for (Movie movie : movies) {
             boolean matchesGenre = genre == null || genre == Movie.Genre.ALL || movie.getGenres().contains(genre);
@@ -65,8 +68,6 @@ public class HomeController implements Initializable {
 
         return filteredMovies;
     }
-
-
     private void applyFilters() {
 
         Movie.Genre selectedGenre = genreComboBox.getValue();
@@ -75,7 +76,6 @@ public class HomeController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
