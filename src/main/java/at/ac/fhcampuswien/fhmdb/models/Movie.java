@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Movie {
     private String title;
@@ -19,6 +20,11 @@ public class Movie {
         this.title = title;
         this.description = description;
         this.genres = genres;
+    }
+    public String getGenresAsString() {
+        return genres.stream()
+                .map(Enum::toString)  // Convert each genre to its string representation
+                .collect(Collectors.joining(", "));  // Join the genres with commas
     }
     @Override
     public int hashCode() {

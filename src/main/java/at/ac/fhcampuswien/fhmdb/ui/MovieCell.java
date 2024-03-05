@@ -8,11 +8,14 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
 public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
+    private final Label genre = new Label();
     private final Label detail = new Label();
-    private final VBox layout = new VBox(title, detail);
+    private final VBox layout = new VBox(title, genre, detail);
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -25,9 +28,11 @@ public class MovieCell extends ListCell<Movie> {
             // Reset any properties that might be affected by cell reuse
             title.setText("");
             detail.setText("");
+            genre.setText("");
             layout.setBackground(null);
             title.getStyleClass().clear();
             detail.getStyleClass().clear();
+            genre.getStyleClass().clear();
 
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
@@ -36,11 +41,12 @@ public class MovieCell extends ListCell<Movie> {
                             ? movie.getDescription()
                             : "No description available"
             );
-
+            genre.setText("Genres: " + movie.getGenresAsString());
 
             // color scheme
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
+            genre.getStyleClass().add("text-blue");  // Adjust color as needed
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
 
             // layout

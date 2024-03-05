@@ -13,6 +13,7 @@
 
 .text-yellow {
     -fx-text-fill: #f5c518;
+    -fx-font-weight:bold;
 }
 
 .text-white {
@@ -32,6 +33,11 @@
 .movie-cell {
     -fx-background-color: black;
     -fx-padding: 2;
+}
+.text-blue {
+    -fx-text-fill: #3366FF;
+    -fx-font-size: 14px;
+    -fx-font-weight:bold;
 }
 
 .filter-combo-box {

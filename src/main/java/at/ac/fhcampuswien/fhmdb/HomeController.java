@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.net.URL;
@@ -68,6 +69,7 @@ public class HomeController implements Initializable {
 
         return filteredMovies;
     }
+
     private void applyFilters() {
 
         Movie.Genre selectedGenre = genreComboBox.getValue();
@@ -76,22 +78,17 @@ public class HomeController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(filteredMovies);
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
         observableMovies.addAll(allMovies);
         movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(movieListView -> new MovieCell());
-
+        movieListView.setCellFactory(param -> new MovieCell());
         genreComboBox.getItems().addAll(Movie.Genre.values());
         genreComboBox.setPromptText("Filter by Genre");
-
         searchBtn.setOnAction(event -> applyFilters());
-
     }
 }
-
-
 /*   Sort button example:
         sortBtn.setOnAction(actionEvent -> {
             if(sortBtn.getText().equals("Sort (asc)")) {
