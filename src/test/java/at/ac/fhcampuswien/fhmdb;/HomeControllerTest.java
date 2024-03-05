@@ -59,19 +59,14 @@ public class HomeControllerTest {
     }
     @Test
     void test_sorting_button_by_title() {
-
-            // Sort allMovies in ascending order
+            // Ascending order
             controller.allMovies.sort(Comparator.comparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER));
-
-            // Check the order of the items in allMovies
             assertEquals("Inception", controller.allMovies.get(0).getTitle());
             assertEquals("Parasite", controller.allMovies.get(1).getTitle());
             assertEquals("The Dark Knight", controller.allMovies.get(2).getTitle());
 
-            // Sort allMovies in descending order
+            // Descending order
             controller.allMovies.sort(Comparator.comparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER).reversed());
-
-            // Check the order of the items in allMovies
             assertEquals("The Dark Knight", controller.allMovies.get(0).getTitle());
             assertEquals("Parasite", controller.allMovies.get(1).getTitle());
             assertEquals("Inception", controller.allMovies.get(2).getTitle());
