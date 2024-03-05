@@ -23,8 +23,8 @@ public class Movie {
     }
     public String getGenresAsString() {
         return genres.stream()
-                .map(Enum::toString)  // Convert each genre to its string representation
-                .collect(Collectors.joining(", "));  // Join the genres with commas
+                .map(Enum::toString)
+                .collect(Collectors.joining(", "));
     }
     @Override
     public int hashCode() {

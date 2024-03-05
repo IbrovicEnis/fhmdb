@@ -32,7 +32,7 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXButton sortBtn;
-    private boolean ascendingOrder = true; // Variable to track sorting order
+    private boolean ascendingOrder = true;
 
     public List<Movie> allMovies = Movie.initializeMovies();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
@@ -47,7 +47,7 @@ public class HomeController implements Initializable {
             sortBtn.setText("Sort (asc)");
         }
 
-        ascendingOrder = !ascendingOrder; // Toggle the sorting order
+        ascendingOrder = !ascendingOrder;
     }
 
     public List<Movie> filterMovies(List<Movie> movies, Movie.Genre genre, String searchText) {

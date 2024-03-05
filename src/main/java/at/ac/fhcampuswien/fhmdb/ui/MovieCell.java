@@ -25,7 +25,6 @@ public class MovieCell extends ListCell<Movie> {
             setText(null);
             setGraphic(null);
         } else {
-            // Reset any properties that might be affected by cell reuse
             title.setText("");
             detail.setText("");
             genre.setText("");
@@ -33,7 +32,6 @@ public class MovieCell extends ListCell<Movie> {
             title.getStyleClass().clear();
             detail.getStyleClass().clear();
             genre.getStyleClass().clear();
-
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
             detail.setText(
@@ -42,14 +40,10 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
             );
             genre.setText("Genres: " + movie.getGenresAsString());
-
-            // color scheme
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
-            genre.getStyleClass().add("text-blue");  // Adjust color as needed
+            genre.getStyleClass().add("text-blue");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
-
-            // layout
             title.fontProperty().set(title.getFont().font(20));
             detail.setMaxWidth(this.getScene().getWidth() - 30);
             detail.setWrapText(true);
