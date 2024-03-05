@@ -1,5 +1,4 @@
-package at.ac.fhcampuswien.fhmdb;
-
+import at.ac.fhcampuswien.fhmdb.HomeController;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,19 +24,19 @@ public class HomeControllerTest {
     }
 
 
-    //Test wurde implementiert, da es beim Filtern zunächst schwierigkeiten mit doppelten einträgen etc. gab
+    //Test was implemented because there were initial difficulties with duplicate entries, etc., during filtering.
     @Test
     void test_if_filtering_genre_returns_correct_amount_of_movies()
     {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "");
-        assertEquals(2, result.size(), "Die Anzahl der gefilterten Filme nach Genre ACTION sollte 2 sein.");
+        assertEquals(2, result.size(), "The number of filtered movies for the genre ACTION should be 2.");
     }
 
     @Test
     void test_if_filtering_only_genre_returns_correct_movies_that_contain_that_genre() {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.CRIME, "");
-        assertEquals(1, result.size(), "Die Anzahl der gefilterten Filme nach Genre CRIME sollte 1 sein.");
-        assertTrue(result.get(0).getGenres().contains(Movie.Genre.CRIME), "Der Film sollte das Genre CRIME enthalten.");
+        assertEquals(1, result.size(), "The number of filtered movies for the genre CRIME should be 1.");
+        assertTrue(result.get(0).getGenres().contains(Movie.Genre.CRIME), "The movie should belong to the genre CRIME.");
     }
 
 
