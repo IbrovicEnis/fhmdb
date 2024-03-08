@@ -27,7 +27,6 @@ public class HomeControllerTest {
         );
     }
 
-
     //Test was implemented because there were initial difficulties with duplicate entries, etc., during filtering.
     @Test
     void test_if_filtering_genre_returns_correct_amount_of_movies()
@@ -37,18 +36,19 @@ public class HomeControllerTest {
     }
 
     @Test
-    void test_if_filtering_only_genre_returns_correct_movies_that_contain_that_genre() {
+    void test_if_filtering_only_genre_returns_correct_movies() {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.CRIME, "");
         assertEquals(1, result.size(), "The number of filtered movies for the genre CRIME should be 1.");
         assertTrue(result.get(0).getGenres().contains(Movie.Genre.CRIME), "The movie should belong to the genre CRIME.");
+        assertEquals("The Dark Knight", result.get(0).getTitle(), "The movie Title should be 'The Dark Knight'");
     }
-
 
     @Test
     void test_if_filtering_only_text_returns_correct_movies() {
-        List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ALL, "superhero");
+        List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ALL, "bending");
         assertEquals(1, result.size());
-        assertTrue(result.get(0).getDescription().contains("superhero") ||result.get(0).getTitle().contains("superhero") );
+        assertTrue(result.get(0).getDescription().contains("bending") || result.get(0).getTitle().contains("bendigng"), "The movie should have 'bending' in his description/title");
+        assertEquals("Inception", result.get(0).getTitle(), "The movie Title should be 'Inception'");
     }
 
     @Test
@@ -56,6 +56,7 @@ public class HomeControllerTest {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "superhero");
         assertEquals(1, result.size());
         assertTrue((result.get(0).getDescription().contains("superhero") ||result.get(0).getTitle().contains("superhero")) &&  result.get(0).getGenres().contains(Movie.Genre.ACTION));
+        assertEquals("The Dark Knight", result.get(0).getTitle(), "The movie Title should be 'The Dark Knight'");
     }
     @Test
     void test_sorting_button_by_title() {
@@ -92,6 +93,7 @@ public class HomeControllerTest {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "invalid text");
         assertEquals(0, result.size(), "The number of filtered movies should be 0 when the search text does not match any movie.");
     }
+
    /*@Test
     void test_initialize() {
         controller.allMovies = HomeController.initializeMovies();

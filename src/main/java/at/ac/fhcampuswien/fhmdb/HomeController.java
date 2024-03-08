@@ -51,7 +51,6 @@ public class HomeController implements Initializable {
     }
 
     public List<Movie> filterMovies(List<Movie> movies, Movie.Genre genre, String searchText) {
-        // Check if movies is null
         if (movies == null) {
             return null;
         }
