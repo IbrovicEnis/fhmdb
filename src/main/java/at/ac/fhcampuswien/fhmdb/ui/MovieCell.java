@@ -8,8 +8,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
 
 public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();

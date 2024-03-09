@@ -38,7 +38,7 @@ public class HomeController implements Initializable {
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
 
     @FXML
-    private void handleSortButton(ActionEvent event) {
+    private void handleSortButton(ActionEvent useSort) {
         if (ascendingOrder) {
             observableMovies.sort(Comparator.comparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER));
             sortBtn.setText("Sort (desc)");
@@ -50,12 +50,12 @@ public class HomeController implements Initializable {
         ascendingOrder = !ascendingOrder;
     }
 
-    public List<Movie> filterMovies(List<Movie> movies, Movie.Genre genre, String searchText) {
-        if (movies == null) {
+    public List<Movie> filterMovies(List<Movie> moviesList, Movie.Genre genre, String searchText) {
+        if (moviesList == null) {
             return null;
         }
         List<Movie> filteredMovies = new ArrayList<>();
-        for (Movie movie : movies) {
+        for (Movie movie : moviesList) {
             boolean matchesGenre = genre == null || genre == Movie.Genre.ALL || movie.getGenres().contains(genre);
             boolean matchesSearchText = searchText == null || searchText.isEmpty()
                     || movie.getTitle().toLowerCase().contains(searchText.toLowerCase())
@@ -82,10 +82,10 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         observableMovies.addAll(allMovies);
         movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(param -> new MovieCell());
+        movieListView.setCellFactory(create -> new MovieCell());
         genreComboBox.getItems().addAll(Movie.Genre.values());
         genreComboBox.setPromptText("Filter by Genre");
-        searchBtn.setOnAction(event -> applyFilters());
+        searchBtn.setOnAction(click -> applyFilters());
     }
 }
 /*   Sort button example:

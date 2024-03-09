@@ -12,10 +12,10 @@ public class Movie {
     private List<Genre> genres;
     public Movie(String title, String description, List<Genre> genres) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be null or empty");
+            throw new IllegalArgumentException("Please enter a proper movie title!");
         }
         if (genres == null || genres.isEmpty()) {
-            throw new IllegalArgumentException("Genres list cannot be null or empty");
+            throw new IllegalArgumentException("Please assign a proper genre for the movie!");
         }
         this.title = title;
         this.description = description;
@@ -32,17 +32,16 @@ public class Movie {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Movie otherMovie = (Movie) obj;
+    public boolean equals(Object movie) {
+        if (this == movie) return true;
+        if (movie == null || getClass() != movie.getClass()) return false; // check if movie is null or not in Movie
+        Movie otherMovie = (Movie) movie;
         return Objects.equals(title, otherMovie.title) &&
                 Objects.equals(description, otherMovie.description) &&
                 Objects.equals(genres, otherMovie.genres);
     }
 
-    public String getTitle() {
-        return title;
+    public String getTitle() {return title;
     }
 
     public String getDescription() {
