@@ -22,9 +22,14 @@ public class Movie {
         this.genres = genres;
     }
     public String getGenresAsString() {
-        return genres.stream()
-                .map(Enum::toString)
-                .collect(Collectors.joining(", "));
+        String result = "";
+        for (Enum genre : genres) {
+            if (!result.isEmpty()) {
+                result += ", ";
+            }
+            result += genre.toString();
+        }
+        return result;
     }
     @Override
     public int hashCode() {
@@ -34,7 +39,7 @@ public class Movie {
     @Override
     public boolean equals(Object movie) {
         if (this == movie) return true;
-        if (movie == null || getClass() != movie.getClass()) return false; // check if movie is null or not in Movie
+        if (movie == null || getClass() != movie.getClass()) return false;
         Movie otherMovie = (Movie) movie;
         return Objects.equals(title, otherMovie.title) &&
                 Objects.equals(description, otherMovie.description) &&
