@@ -115,6 +115,40 @@ public class HomeControllerTest {
     void test_movie_constructor_genres_null() {
         assertThrows(IllegalArgumentException.class, () -> new Movie("title", "description", null));
     }
+    @Test
+    void test_equals_with_same_movies() {
+        Movie movie1 = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
+        Movie movie2 = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
+        assertTrue(movie1.equals(movie2), "It should be considered equal");
+    }
+    @Test
+    void test_equals_with_null() {
+        Movie movie1 = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
+        assertFalse(movie1.equals(null), "It should not be considered equal");
+    }
+    @Test
+    void test_equals_with_different_titles() {
+        Movie movie1 = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
+        Movie movie2 = new Movie("The Dark Knight", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
+        assertFalse(movie1.equals(movie2), "It should not be considered equal");
+    }
+    @Test
+    void test_equals_with_different_description() {
+        Movie movie1 = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
+        Movie movie2 = new Movie("Inception", "A superhero action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
+        assertFalse(movie1.equals(movie2), "It should not be considered equal");
+    }
+    @Test
+    void test_equals_with_different_genres() {
+        Movie movie1 = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
+        Movie movie2 = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION));
+        assertFalse(movie1.equals(movie2), "It should not be considered equal");
+    }
+    @Test
+    void test_GetGenresAsString() {
+        String genres = controller.allMovies.get(0).getGenresAsString();
+        assertEquals("ACTION, FANTASY", genres, "Output should be: ACTION, FANTASY but was: "+ genres);
+    }
 
 
    /*@Test
