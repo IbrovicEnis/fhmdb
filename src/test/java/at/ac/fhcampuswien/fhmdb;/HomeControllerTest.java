@@ -1,13 +1,9 @@
 import at.ac.fhcampuswien.fhmdb.HomeController;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
-import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
-import javafx.event.ActionEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+
 import java.util.*;
-import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -93,6 +89,33 @@ public class HomeControllerTest {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "invalid text");
         assertEquals(0, result.size(), "The number of filtered movies should be 0 when the search text does not match any movie.");
     }
+    @Test
+    void test_filtering_is_case_insensitive() {
+        List<Movie> result = controller.filterMovies(controller.allMovies, null, "inception");
+        assertEquals(1, result.size(), "Filtering should be case insensitive.");
+    }
+    @Test
+    void test_sorting_filtered_movies() {
+        List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "");
+        result.sort(Comparator.comparing(Movie::getTitle));
+        assertEquals("Inception", result.get(0).getTitle(), "Inception should be first after sorting filtered list.");
+    }
+    @Test
+    void test_sorting_filtered_movies_reversed() {
+        List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "");
+        result.sort(Comparator.comparing(Movie::getTitle).reversed());
+        assertEquals("The Dark Knight", result.get(0).getTitle(), "The Dark Knight should be first after sorting filtered list.");
+    }
+    @Test
+    void test_movie_constructor_title_null() {
+        assertThrows(IllegalArgumentException.class, () -> new Movie(null, "description", Arrays.asList(Movie.Genre.ACTION)));
+    }
+
+    @Test
+    void test_movie_constructor_genres_null() {
+        assertThrows(IllegalArgumentException.class, () -> new Movie("title", "description", null));
+    }
+
 
    /*@Test
     void test_initialize() {
