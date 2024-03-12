@@ -84,8 +84,8 @@ public class HomeController implements Initializable {
         movieListView.setItems(observableMovies);
         movieListView.setCellFactory(create -> new MovieCell());
         genreComboBox.getItems().addAll(Movie.Genre.values());
-        genreComboBox.setPromptText("Filter by Genre");
         searchBtn.setOnAction(click -> applyFilters());
+        searchField.setOnAction(event -> applyFilters());
     }
 }
 /*   Sort button example:
