@@ -15,7 +15,6 @@ public class FhmdbApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(FhmdbApplication.class.getResource("home-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 600);
         scene.getStylesheets().add(Objects.requireNonNull(FhmdbApplication.class.getResource("styles.css")).toExternalForm());
-        stage.getIcons().add(new Image(Objects.requireNonNull(FhmdbApplication.class.getResourceAsStream("/at/ac/fhcampuswien/fhmdb/app_icon.png"))));
         stage.setTitle("FHMDb");
         stage.setScene(scene);
         stage.show();

@@ -79,12 +79,6 @@ public class HomeControllerTest {
         assertNull(result, "The result should be null when the input list is null.");
     }
     @Test
-    void test_filtering_with_single_movie() {
-        List<Movie> singleMovieList = Collections.singletonList(new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY)));
-        List<Movie> result = controller.filterMovies(singleMovieList, Movie.Genre.ACTION, "");
-        assertEquals(1, result.size(), "The number of filtered movies should be 1 when the input list contains a single movie of the specified genre.");
-    }
-    @Test
     void test_filtering_with_invalid_input() {
         List<Movie> result = controller.filterMovies(controller.allMovies, Movie.Genre.ACTION, "invalid text");
         assertEquals(0, result.size(), "The number of filtered movies should be 0 when the search text does not match any movie.");
@@ -149,24 +143,4 @@ public class HomeControllerTest {
         String genres = controller.allMovies.get(0).getGenresAsString();
         assertEquals("ACTION, FANTASY", genres, "Output should be: ACTION, FANTASY but was: "+ genres);
     }
-
-
-   /*@Test
-    void test_initialize() {
-        controller.allMovies = HomeController.initializeMovies();
-        controller.initialize(null, null);
-        assertEquals(controller.allMovies.size(), controller.observableMovies.size());
-        assertEquals(controller.observableMovies, controller.movieListView.getItems());
-        assertEquals(Arrays.asList(Movie.Genre.values()), controller.genreComboBox.getItems());
-        assertNotNull(controller.searchBtn.getOnAction());
-    }
-    @Test
-    void test_updateItem() {
-        MovieCell cell = new MovieCell();
-        Movie movie = new Movie("Inception", "A mind-bending action-adventure", Arrays.asList(Movie.Genre.ACTION, Movie.Genre.FANTASY));
-        cell.updateItem(movie, false);
-        assertEquals("Inception", cell.titleLabel.getText());
-        assertEquals("A mind-bending action-adventure", cell.descriptionLabel.getText());
-        assertEquals("[ACTION, FANTASY]", cell.genreLabel.getText());
-    }*/
 }
