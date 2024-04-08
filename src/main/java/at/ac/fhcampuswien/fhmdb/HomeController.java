@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 public class HomeController implements Initializable {
 
     @FXML
+    public JFXButton longestMvTitel;
+
+    @FXML
     private ListView<Movie> movieListView;
 
     @FXML
@@ -69,7 +72,6 @@ public class HomeController implements Initializable {
         ascendingOrder = !ascendingOrder;
     }
 
-
     public List<Movie> filterMovies(List<Movie> moviesList, Genres genre, String searchText) {
         if (moviesList == null) {
             return null;
@@ -101,7 +103,24 @@ public class HomeController implements Initializable {
 
         return mostPopularActorEntry.map(Map.Entry::getKey).orElse(null);
     }
-   @FXML
+
+    public int getLongestMovieTitle(List<Movie> filteredMovies){
+        return filteredMovies.stream()
+                .mapToInt(movie -> movie.getTitle().replace(" ","").length())
+                .max()
+                .orElse(0);
+    }
+
+    public long countMoviesFrom(List<Movie> filteredMovies, String director) {
+        if (filteredMovies == null || filteredMovies.isEmpty()) {
+            return 0;
+        }
+        return filteredMovies.stream()
+                .filter(movie -> movie.getDirectors().stream().anyMatch(d -> d.equalsIgnoreCase(director)))
+                .count();
+    }
+
+    @FXML
     private void handleStar(ActionEvent event) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
@@ -123,7 +142,6 @@ public class HomeController implements Initializable {
         alert.setContentText(mostPopularActor);
         alert.showAndWait();
     }
-
 
     private void applyFilters() {
         String selectedGenre = genreComboBox.getValue();
@@ -158,16 +176,18 @@ public class HomeController implements Initializable {
         initializeMovies();
         Platform.runLater(this::fetchMoviesAsync);
     }
-}
 
-/*   Sort button example:
-        sortBtn.setOnAction(actionEvent -> {
-            if(sortBtn.getText().equals("Sort (asc)")) {
-                // TODO sort observableMovies ascending
-                sortBtn.setText("Sort (desc)");
-            } else {
-                // TODO sort observableMovies descending
-                sortBtn.setText("Sort (asc)");
-            }
-        });
-*/
+    public void handlelongestMvTitel(ActionEvent actionEvent) {
+        Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
+        int movieTitelLength = getLongestMovieTitle(filteredMovies);
+        showStarDialog(String.valueOf(movieTitelLength));
+    }
+
+    public void handlecountMoviesFrom(ActionEvent actionEvent) {
+        Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
+        long movieCount = countMoviesFrom(filteredMovies,searchField.getText());
+        showStarDialog(String.valueOf(movieCount));
+    }
+}

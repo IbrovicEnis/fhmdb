@@ -10,7 +10,7 @@ public class MovieBuilder {
     private List<Genres> genres;
     private int releaseYear;
     private String description;
-    private String director;
+    private List<String> directors;
     private List<String> mainCast;
     private double rating;
 
@@ -36,8 +36,8 @@ public class MovieBuilder {
         return this;
     }
 
-    public MovieBuilder setDirector(String director) {
-        this.director = director;
+    public MovieBuilder setDirectors(List<String> directors) {
+        this.directors = directors;
         return this;
     }
 
@@ -53,6 +53,6 @@ public class MovieBuilder {
 
 
     public Movie build() {
-        return new Movie(title, description, genres, director, releaseYear, rating, mainCast);
+        return new Movie(title, description, genres, directors, releaseYear, rating, mainCast);
     }
 }

@@ -12,12 +12,12 @@ public class Movie {
     private final String title;
     private final String description;
     private final List<Genres> genres;
-    private final String director;
+    private final List<String> directors;
     private final int releaseYear;
     private final double rating;
-    private List<String> mainCast;
+    private final List<String> mainCast;
 
-    public Movie(String title, String description, List<Genres> genres, String director, int releaseYear, double rating, List<String> mainCast) {
+    public Movie(String title, String description, List<Genres> genres, List<String> directors, int releaseYear, double rating, List<String> mainCast) {
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Please enter a proper movie title!");
         }
@@ -27,7 +27,7 @@ public class Movie {
         this.title = title;
         this.description = description;
         this.genres = genres;
-        this.director = director;
+        this.directors = directors != null ? directors : new ArrayList<>();
         this.releaseYear = releaseYear;
         this.rating = rating;
         this.mainCast = mainCast != null ? mainCast : new ArrayList<>();
@@ -35,7 +35,7 @@ public class Movie {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, genres, director, releaseYear, rating);
+        return Objects.hash(title, description, genres, directors, releaseYear, rating, mainCast);
     }
 
     @Override
@@ -46,9 +46,10 @@ public class Movie {
         return Objects.equals(title, otherMovie.title) &&
                 Objects.equals(description, otherMovie.description) &&
                 Objects.equals(genres, otherMovie.genres) &&
-                Objects.equals(director, otherMovie.director) &&
+                Objects.equals(directors, otherMovie.directors) &&
                 releaseYear == otherMovie.releaseYear &&
-                Double.compare(otherMovie.rating, rating) == 0;
+                Double.compare(otherMovie.rating, rating) == 0 &&
+                Objects.equals(mainCast, otherMovie.mainCast);
     }
 
     public String getTitle() {
@@ -59,8 +60,8 @@ public class Movie {
         return description;
     }
 
-    public String getDirector() {
-        return director;
+    public List<String> getDirectors() {
+        return directors;
     }
 
     public int getReleaseYear() {
@@ -85,9 +86,7 @@ public class Movie {
             result += genre.toString();
         }
         return result;
-
     }
-
 
     public static List<Movie> initializeMovies() {
         List<Movie> movies = new ArrayList<>();

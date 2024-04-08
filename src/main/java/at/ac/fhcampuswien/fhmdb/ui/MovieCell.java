@@ -48,7 +48,7 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
             );
             genre.setText("Genres: " + String.join(", ", movie.getGenresAsString()));
-            director.setText("Director: " + movie.getDirector());
+            director.setText("Director: " + movie.getDirectors());
             releaseYear.setText("Release Year: " + movie.getReleaseYear());
             rating.setText("Rating: " + movie.getRating());
             title.getStyleClass().add("text-yellow");
