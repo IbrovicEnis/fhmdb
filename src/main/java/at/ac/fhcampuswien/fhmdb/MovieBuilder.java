@@ -51,7 +51,8 @@ public class MovieBuilder {
         return this;
     }
 
+
     public Movie build() {
-        return new Movie(title, description, genres, director, releaseYear, rating);
+        return new Movie(title, description, genres, director, releaseYear, rating, mainCast);
     }
 }

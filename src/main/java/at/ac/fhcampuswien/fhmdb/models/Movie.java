@@ -15,8 +15,9 @@ public class Movie {
     private final String director;
     private final int releaseYear;
     private final double rating;
+    private List<String> mainCast;
 
-    public Movie(String title, String description, List<Genres> genres, String director, int releaseYear, double rating) {
+    public Movie(String title, String description, List<Genres> genres, String director, int releaseYear, double rating, List<String> mainCast) {
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Please enter a proper movie title!");
         }
@@ -29,6 +30,7 @@ public class Movie {
         this.director = director;
         this.releaseYear = releaseYear;
         this.rating = rating;
+        this.mainCast = mainCast != null ? mainCast : new ArrayList<>();
     }
 
     @Override
@@ -71,7 +73,9 @@ public class Movie {
     public List<Genres> getGenres() {
         return genres;
     }
-
+    public List<String> getMainCast() {
+        return mainCast;
+    }
     public String getGenresAsString() {
         String result = "";
         for (Enum genre : genres) {

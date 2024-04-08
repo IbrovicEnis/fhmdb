@@ -4,41 +4,34 @@ import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXListView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
-import javax.imageio.IIOParam;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
-
 public class HomeController implements Initializable {
+
     @FXML
     private ListView<Movie> movieListView;
 
     @FXML
     public JFXButton searchBtn;
-
+    @FXML
+    public JFXButton sortBtn;
     @FXML
     public TextField searchField;
 
     @FXML
     public JFXComboBox<String> genreComboBox;
-
-    @FXML
-    public JFXButton sortBtn;
-
     private boolean ascendingOrder = true;
 
     public List<Movie> allMovies = Movie.initializeMovies();
@@ -76,6 +69,7 @@ public class HomeController implements Initializable {
         ascendingOrder = !ascendingOrder;
     }
 
+
     public List<Movie> filterMovies(List<Movie> moviesList, Genres genre, String searchText) {
         if (moviesList == null) {
             return null;
@@ -93,6 +87,41 @@ public class HomeController implements Initializable {
         }
 
         return filteredMovies;
+    }
+    public String getStar(List<Movie> filteredMovies) {
+        if (filteredMovies == null || filteredMovies.isEmpty()) {
+            return null;
+        }
+        Map<String, Long> actorFrequencyMap = filteredMovies.stream()
+                .flatMap(movie -> movie.getMainCast().stream())
+                .collect(Collectors.groupingBy(actor -> actor, Collectors.counting()));
+
+        Optional<Map.Entry<String, Long>> mostPopularActorEntry = actorFrequencyMap.entrySet().stream()
+                .max(Map.Entry.comparingByValue());
+
+        return mostPopularActorEntry.map(Map.Entry::getKey).orElse(null);
+    }
+   @FXML
+    private void handleStar(ActionEvent event) {
+        Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
+        String mostPopularActor = getStar(filteredMovies);
+       if (mostPopularActor != null) {
+           showStarDialog(mostPopularActor);
+       } else {
+           Alert alert = new Alert(Alert.AlertType.INFORMATION);
+           alert.setTitle("No Movies Found");
+           alert.setHeaderText(null);
+           alert.setContentText("No movies found.");
+           alert.showAndWait();
+       }
+    }
+    private void showStarDialog(String mostPopularActor) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Most popular actor!");
+        alert.setHeaderText(null);
+        alert.setContentText(mostPopularActor);
+        alert.showAndWait();
     }
 
 
@@ -125,6 +154,7 @@ public class HomeController implements Initializable {
         genreComboBox.setValue("ALL");
         searchBtn.setOnAction(event -> applyFilters());
         sortBtn.setOnAction(this::handleSortButton);
+
         initializeMovies();
         Platform.runLater(this::fetchMoviesAsync);
     }

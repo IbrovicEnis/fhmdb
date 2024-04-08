@@ -83,3 +83,8 @@
     -fx-background-color: transparent;
     -fx-shape: " ";
 }
+.star-button {
+    -fx-text-fill: #000000;
+    -fx-background-color: #f5c518;
+    -fx-font-weight: bold;
+}
