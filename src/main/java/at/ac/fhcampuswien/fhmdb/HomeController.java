@@ -79,8 +79,11 @@ public class HomeController implements Initializable {
         List<Movie> filteredMovies = new ArrayList<>();
         for (Movie movie : moviesList) {
             boolean matchesGenre = genre == null || genre == Genres.ALL || movie.getGenres().contains(genre);
+            boolean matchesDirector = movie.getDirectors().stream()
+                    .anyMatch(director -> director.toLowerCase().contains(searchText.toLowerCase()));
             boolean matchesSearchText = searchText == null || searchText.isEmpty()
                     || movie.getTitle().toLowerCase().contains(searchText.toLowerCase())
+                    || matchesDirector
                     || movie.getDescription().toLowerCase().contains(searchText.toLowerCase());
 
             if (matchesGenre && matchesSearchText) {
@@ -90,6 +93,7 @@ public class HomeController implements Initializable {
 
         return filteredMovies;
     }
+
     public String getStar(List<Movie> filteredMovies) {
         if (filteredMovies == null || filteredMovies.isEmpty()) {
             return null;
@@ -116,7 +120,8 @@ public class HomeController implements Initializable {
             return 0;
         }
         return filteredMovies.stream()
-                .filter(movie -> movie.getDirectors().stream().anyMatch(d -> d.equalsIgnoreCase(director)))
+                .filter(movie -> movie.getDirectors().stream()
+                        .anyMatch(d -> d.toLowerCase().contains(director.toLowerCase())))
                 .count();
     }
 
