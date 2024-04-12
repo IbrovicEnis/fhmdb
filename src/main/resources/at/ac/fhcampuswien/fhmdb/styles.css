@@ -44,7 +44,6 @@
     -fx-font-weight:bold;
 
 }
-
 .jfx-combo-box .label {
     -fx-text-fill: black;
     -fx-font-size: 16px;
@@ -54,11 +53,6 @@
     -fx-background-color: black;
 }
 
-#sortBtn{
-    -fx-text-fill: black;
-    -fx-font-size: 16px;
-    -fx-font-weight:bold;
-}
 .scroll-bar {
     -fx-background-color: transparent;
 }
@@ -84,7 +78,35 @@
     -fx-shape: " ";
 }
 .star-button {
-    -fx-text-fill: #000000;
     -fx-background-color: #f5c518;
-    -fx-font-weight: bold;
+    -fx-text-fill: black;
+    -fx-font-size: 16px;
+    -fx-font-weight:bold;
+}
+.star-button:hover {
+    -fx-background-color: #d2a200;
+}
+.hoverEffect {
+    -fx-background-color: #f5c518;
+    -fx-text-fill: black;
+}
+.hoverEffect:hover {
+    -fx-background-color: #d2a200;
+}
+
+#startYear {
+    -fx-background-insets: 0, 0 0 0 0;
+    -fx-background-radius: 0 0 0 3;
+    -fx-border-color: transparent black transparent transparent;
+    -fx-border-width: 0 1px 0 0;
+}
+#endYear {
+    -fx-background-insets: 0, 0 0 0 0;
+    -fx-background-radius: 0 0 3 0;
+    -fx-border-color: transparent transparent transparent black;
+    -fx-border-width: 0 0 0 1px;
+}
+#filterYears{
+    -fx-background-insets: 0, 0 0 0 0;
+    -fx-background-radius: 3 3 0 0;
 }

@@ -22,17 +22,20 @@ public class HomeController implements Initializable {
 
     @FXML
     public JFXButton longestMvTitel;
-
+    @FXML
+    public TextField startingYears;
+    @FXML
+    public TextField endingYears;
+    @FXML
+    public Button filterYears;
     @FXML
     private ListView<Movie> movieListView;
-
     @FXML
     public JFXButton searchBtn;
     @FXML
     public JFXButton sortBtn;
     @FXML
     public TextField searchField;
-
     @FXML
     public JFXComboBox<String> genreComboBox;
     private boolean ascendingOrder = true;
@@ -40,6 +43,7 @@ public class HomeController implements Initializable {
     public List<Movie> allMovies = Movie.initializeMovies();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     private final MovieAPI movieAPI = new MovieAPI();
+
     private void fetchMoviesAsync() {
         Thread fetchThread = new Thread(() -> {
             MovieAPI movieAPI = new MovieAPI();
@@ -59,7 +63,8 @@ public class HomeController implements Initializable {
         observableMovies.addAll(movies);
         movieListView.setItems(observableMovies);
     }
-        @FXML
+
+    @FXML
     private void handleSortButton(ActionEvent useSort) {
         if (ascendingOrder) {
             observableMovies.sort(Comparator.comparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER));
@@ -90,7 +95,14 @@ public class HomeController implements Initializable {
                 filteredMovies.add(movie);
             }
         }
-
+        int startYear;
+        int endYear;
+        if (searchText != null && searchText.matches("\\d{4}-\\d{4}")) {
+            String[] years = searchText.split("-");
+            startYear = Integer.parseInt(years[0].trim());
+            endYear = Integer.parseInt(years[1].trim());
+            return getMoviesBetweenYears(moviesList, startYear, endYear);
+        }
         return filteredMovies;
     }
 
@@ -108,9 +120,9 @@ public class HomeController implements Initializable {
         return mostPopularActorEntry.map(Map.Entry::getKey).orElse(null);
     }
 
-    public int getLongestMovieTitle(List<Movie> filteredMovies){
+    public int getLongestMovieTitle(List<Movie> filteredMovies) {
         return filteredMovies.stream()
-                .mapToInt(movie -> movie.getTitle().replace(" ","").length())
+                .mapToInt(movie -> movie.getTitle().replace(" ", "").length())
                 .max()
                 .orElse(0);
     }
@@ -125,21 +137,32 @@ public class HomeController implements Initializable {
                 .count();
     }
 
+    public List<Movie> getMoviesBetweenYears(List<Movie> filteredMovies, int startYear, int endYear) {
+
+        if (filteredMovies == null || filteredMovies.isEmpty()) {
+            return filteredMovies;
+        }
+        return filteredMovies.stream()
+                .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
+                .collect(Collectors.toList());
+    }
+
     @FXML
     private void handleStar(ActionEvent event) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
         String mostPopularActor = getStar(filteredMovies);
-       if (mostPopularActor != null) {
-           showStarDialog(mostPopularActor);
-       } else {
-           Alert alert = new Alert(Alert.AlertType.INFORMATION);
-           alert.setTitle("No Movies Found");
-           alert.setHeaderText(null);
-           alert.setContentText("No movies found.");
-           alert.showAndWait();
-       }
+        if (mostPopularActor != null) {
+            showStarDialog(mostPopularActor);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Movies Found");
+            alert.setHeaderText(null);
+            alert.setContentText("No movies found.");
+            alert.showAndWait();
+        }
     }
+
     private void showStarDialog(String mostPopularActor) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Most popular actor!");
@@ -154,7 +177,19 @@ public class HomeController implements Initializable {
         String searchText = searchField.getText().trim();
         List<Movie> filteredMovies = filterMovies(allMovies, genreFilter, searchText);
         observableMovies.clear();
-        observableMovies.addAll(filteredMovies);
+        if (startingYears != null && endingYears != null &&
+                !startingYears.getText().trim().isEmpty() && !endingYears.getText().trim().isEmpty()) {
+            try {
+                int startYear = Integer.parseInt(startingYears.getText().trim());
+                int endYear = Integer.parseInt(endingYears.getText().trim());
+                observableMovies.addAll(getMoviesBetweenYears(filteredMovies, startYear, endYear));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        } else {
+            observableMovies.addAll(filteredMovies);
+        }
+
     }
 
     private void initializeMovies() {
@@ -176,23 +211,25 @@ public class HomeController implements Initializable {
                 "SCIENCE_FICTION", "SPORT", "THRILLER", "WAR", "WESTERN"));
         genreComboBox.setValue("ALL");
         searchBtn.setOnAction(event -> applyFilters());
+        searchField.setOnAction(event -> applyFilters());
+        filterYears.setOnAction(event -> applyFilters());
         sortBtn.setOnAction(this::handleSortButton);
 
         initializeMovies();
         Platform.runLater(this::fetchMoviesAsync);
     }
 
-    public void handlelongestMvTitel(ActionEvent actionEvent) {
+    public void handleLongestMvTitel(ActionEvent actionEvent) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
         int movieTitelLength = getLongestMovieTitle(filteredMovies);
         showStarDialog(String.valueOf(movieTitelLength));
     }
 
-    public void handlecountMoviesFrom(ActionEvent actionEvent) {
+    public void handleCountMoviesFrom(ActionEvent actionEvent) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
-        long movieCount = countMoviesFrom(filteredMovies,searchField.getText());
+        long movieCount = countMoviesFrom(filteredMovies, searchField.getText());
         showStarDialog(String.valueOf(movieCount));
     }
 }

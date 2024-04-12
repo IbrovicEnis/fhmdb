@@ -211,5 +211,27 @@ public class HomeControllerTest {
         HomeController controller = new HomeController();
         assertEquals(3, controller.countMoviesFrom(movies, "director"));
     }
+    @Test
+    public void test_getMoviesBetweenYears_with_Null_List() {
+        List<Movie> movies = null;
+        assertNull(controller.getMoviesBetweenYears(movies, 0, 3000), "Expected method to return null for null input list.");
+    }
+    @Test
+    public void test_getMoviesBetweenYears_with_no_matching_Movies() {
+        List<Movie> result = controller.getMoviesBetweenYears(controller.allMovies, 1990, 2000);
+        assertTrue(result.isEmpty(), "Expected no movies to match the year range.");
+    }
+    @Test
+    public void test_getMoviesBetweenYears_with_exact_startYear_and_endYear() {
+        List<Movie> result = controller.getMoviesBetweenYears(controller.allMovies, 2008, 2019);
+        assertEquals(3, result.size(), "Expected three movies that were released exactly within the range.");
+    }
+    @Test
+    public void test_FilterMovies_by_Year_Range() {
+        String searchText = "2000-2015";
+        List<Movie> filteredMovies = controller.filterMovies(controller.allMovies, Genres.ALL, searchText);
+        assertEquals(2, filteredMovies.size(), "Expected two movies to be filtered by year range.");
+        assertTrue(filteredMovies.containsAll(Arrays.asList(controller.allMovies.get(0), controller.allMovies.get(1))), "Filtered movies should match the specified years.");
+    }
 
 }

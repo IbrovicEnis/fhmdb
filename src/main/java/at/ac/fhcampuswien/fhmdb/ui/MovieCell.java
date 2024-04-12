@@ -59,7 +59,7 @@ public class MovieCell extends ListCell<Movie> {
             rating.getStyleClass().add("text-red");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
             title.fontProperty().set(title.getFont().font(20));
-            detail.setMaxWidth(this.getScene().getWidth() - 30);
+            detail.setMaxWidth(this.getScene().getWidth() - 60);
             detail.setWrapText(true);
             layout.setPadding(new Insets(10));
             layout.spacingProperty().set(10);
