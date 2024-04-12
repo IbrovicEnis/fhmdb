@@ -28,9 +28,10 @@ public class Movie {
         this.description = description;
         this.genres = genres;
         this.directors = directors != null ? directors : new ArrayList<>();
+        this.mainCast = mainCast != null ? mainCast : new ArrayList<>();
         this.releaseYear = releaseYear;
         this.rating = rating;
-        this.mainCast = mainCast != null ? mainCast : new ArrayList<>();
+
     }
 
     @Override
@@ -63,6 +64,9 @@ public class Movie {
     public List<String> getDirectors() {
         return directors;
     }
+    public List<String> getMainCast() {
+        return mainCast;
+    }
 
     public int getReleaseYear() {
         return releaseYear;
@@ -74,9 +78,7 @@ public class Movie {
     public List<Genres> getGenres() {
         return genres;
     }
-    public List<String> getMainCast() {
-        return mainCast;
-    }
+
     public String getGenresAsString() {
         String result = "";
         for (Enum genre : genres) {

@@ -48,7 +48,7 @@ public class HomeController implements Initializable {
         Thread fetchThread = new Thread(() -> {
             MovieAPI movieAPI = new MovieAPI();
             try {
-                List<Movie> movies = movieAPI.getAllMovies(null, null);
+                List<Movie> movies = movieAPI.getAllMovies(null, null, null, null);
                 Platform.runLater(() -> updateUIWithMovies(movies));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -106,18 +106,21 @@ public class HomeController implements Initializable {
         return filteredMovies;
     }
 
-    public String getStar(List<Movie> filteredMovies) {
+    public List<String> getStar(List<Movie> filteredMovies) {
         if (filteredMovies == null || filteredMovies.isEmpty()) {
-            return null;
+            return Collections.emptyList();
         }
         Map<String, Long> actorFrequencyMap = filteredMovies.stream()
                 .flatMap(movie -> movie.getMainCast().stream())
                 .collect(Collectors.groupingBy(actor -> actor, Collectors.counting()));
 
-        Optional<Map.Entry<String, Long>> mostPopularActorEntry = actorFrequencyMap.entrySet().stream()
-                .max(Map.Entry.comparingByValue());
+        Optional<Long> tieCount = actorFrequencyMap.values().stream().max(Long::compareTo);
 
-        return mostPopularActorEntry.map(Map.Entry::getKey).orElse(null);
+        return tieCount.map(max -> actorFrequencyMap.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(max))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
     }
 
     public int getLongestMovieTitle(List<Movie> filteredMovies) {
@@ -151,9 +154,10 @@ public class HomeController implements Initializable {
     private void handleStar(ActionEvent event) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
-        String mostPopularActor = getStar(filteredMovies);
-        if (mostPopularActor != null) {
-            showStarDialog(mostPopularActor);
+        List<String> mostPopularActors = getStar(filteredMovies);
+        if (!mostPopularActors.isEmpty()) {
+            long timesFound = getActorCount(filteredMovies, mostPopularActors.get(0)); // Get count for one of the tied actors
+            showStarDialog(mostPopularActors, timesFound);
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("No Movies Found");
@@ -163,12 +167,28 @@ public class HomeController implements Initializable {
         }
     }
 
-    private void showStarDialog(String mostPopularActor) {
+
+    private void showStarDialog(List<String> actors, long timesFound) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Most popular actor!");
+        alert.setTitle("Most popular actor(s)!");
         alert.setHeaderText(null);
-        alert.setContentText(mostPopularActor);
+
+        StringBuilder tieDisplay = new StringBuilder();
+        tieDisplay.append("Most popular actor(s):").append(System.lineSeparator());
+        for (String actor : actors) {
+            tieDisplay.append("* ").append(actor).append(System.lineSeparator());
+        }
+
+        tieDisplay.append(String.format("Has been in %d movies!", timesFound));
+
+        alert.setContentText(tieDisplay.toString());
         alert.showAndWait();
+    }
+    private long getActorCount(List<Movie> movies, String actor) {
+        return movies.stream()
+                .flatMap(movie -> movie.getMainCast().stream())
+                .filter(mainActor -> mainActor.equals(actor))
+                .count();
     }
 
     private void applyFilters() {
@@ -194,7 +214,7 @@ public class HomeController implements Initializable {
 
     private void initializeMovies() {
         try {
-            allMovies = movieAPI.getAllMovies(null, null);
+            allMovies = movieAPI.getAllMovies(null, null, null, null);
             observableMovies.addAll(allMovies);
         } catch (IOException e) {
             e.printStackTrace();
@@ -223,13 +243,13 @@ public class HomeController implements Initializable {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
         int movieTitelLength = getLongestMovieTitle(filteredMovies);
-        showStarDialog(String.valueOf(movieTitelLength));
+
     }
 
     public void handleCountMoviesFrom(ActionEvent actionEvent) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
         long movieCount = countMoviesFrom(filteredMovies, searchField.getText());
-        showStarDialog(String.valueOf(movieCount));
+
     }
 }

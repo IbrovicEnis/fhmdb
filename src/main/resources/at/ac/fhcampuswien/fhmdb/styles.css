@@ -14,7 +14,22 @@
     -fx-text-fill: #f5c518;
     -fx-font-weight:bold;
 }
-
+.text-green {
+    -fx-text-fill: #18f523;
+    -fx-font-weight:bold;
+}
+.text-orange {
+    -fx-text-fill: #f57418;
+    -fx-font-weight:bold;
+}
+.text-purple {
+    -fx-text-fill: #f518e3;
+    -fx-font-weight:bold;
+}
+.text-red {
+    -fx-text-fill: #f51818;
+    -fx-font-weight:bold;
+}
 .text-white {
     -fx-text-fill: #ffffff;
 }

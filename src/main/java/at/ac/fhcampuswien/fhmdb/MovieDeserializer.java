@@ -19,6 +19,7 @@ public abstract class MovieDeserializer implements JsonDeserializer<Movie> {
         String description = jsonObject.get("description").getAsString();
         List<String> genres = Arrays.asList(context.deserialize(jsonObject.get("genres"), String[].class));
         List<String> directors = Arrays.asList(gson.fromJson(jsonObject.get("directors"), String[].class));
+        List<String> mainCast = Arrays.asList(gson.fromJson(jsonObject.get("mainCast"), String[].class));
         int releaseYear = jsonObject.get("releaseYear").getAsInt();
         double rating = jsonObject.get("rating").getAsDouble();
 
@@ -27,6 +28,7 @@ public abstract class MovieDeserializer implements JsonDeserializer<Movie> {
                 .setDescription(description)
                 .setGenres(genres)
                 .setDirectors(directors)
+                .setMainCast(mainCast)
                 .setReleaseYear(releaseYear)
                 .setRating(rating)
                 .build();

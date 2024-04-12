@@ -13,11 +13,11 @@ public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label genre = new Label();
     private final Label detail = new Label();
-    private final Label director = new Label();
+    private final Label directors = new Label();
     private final Label releaseYear = new Label();
     private final Label rating = new Label();
-
-    private final VBox layout = new VBox(title, genre, detail, director, releaseYear, rating);
+    private final Label mainCast = new Label();
+    private final VBox layout = new VBox(title, genre, detail, directors, mainCast, releaseYear, rating);
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -30,14 +30,16 @@ public class MovieCell extends ListCell<Movie> {
             title.setText("");
             detail.setText("");
             genre.setText("");
-            director.setText("");
+            directors.setText("");
+            mainCast.setText("");
             releaseYear.setText("");
             rating.setText("");
             layout.setBackground(null);
             title.getStyleClass().clear();
             detail.getStyleClass().clear();
             genre.getStyleClass().clear();
-            director.getStyleClass().clear();
+            directors.getStyleClass().clear();
+            mainCast.getStyleClass().clear();
             releaseYear.getStyleClass().clear();
             rating.getStyleClass().clear();
             this.getStyleClass().add("movie-cell");
@@ -48,13 +50,15 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
             );
             genre.setText("Genres: " + String.join(", ", movie.getGenresAsString()));
-            director.setText("Director: " + movie.getDirectors());
+            directors.setText("Director: " + String.join(", ", movie.getDirectors()));
+            mainCast.setText("Main Cast: " + String.join(", ", movie.getMainCast()));
             releaseYear.setText("Release Year: " + movie.getReleaseYear());
             rating.setText("Rating: " + movie.getRating());
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
             genre.getStyleClass().add("text-blue");
-            director.getStyleClass().add("text-green");
+            directors.getStyleClass().add("text-green");
+            mainCast.getStyleClass().add("text-orange");
             releaseYear.getStyleClass().add("text-purple");
             rating.getStyleClass().add("text-red");
             layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
