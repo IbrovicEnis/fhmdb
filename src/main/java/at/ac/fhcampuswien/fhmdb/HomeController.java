@@ -168,7 +168,6 @@ public class HomeController implements Initializable {
                 .max()
                 .orElse(0);
     }
-
     public long countMoviesFrom(List<Movie> filteredMovies, String directors) {
         if (filteredMovies == null || filteredMovies.isEmpty()) {
             return 0;
