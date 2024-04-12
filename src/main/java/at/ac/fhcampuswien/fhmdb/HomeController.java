@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
@@ -122,34 +123,6 @@ public class HomeController implements Initializable {
                 .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
     }
-
-    public int getLongestMovieTitle(List<Movie> filteredMovies) {
-        return filteredMovies.stream()
-                .mapToInt(movie -> movie.getTitle().replace(" ", "").length())
-                .max()
-                .orElse(0);
-    }
-
-    public long countMoviesFrom(List<Movie> filteredMovies, String director) {
-        if (filteredMovies == null || filteredMovies.isEmpty()) {
-            return 0;
-        }
-        return filteredMovies.stream()
-                .filter(movie -> movie.getDirectors().stream()
-                        .anyMatch(d -> d.toLowerCase().contains(director.toLowerCase())))
-                .count();
-    }
-
-    public List<Movie> getMoviesBetweenYears(List<Movie> filteredMovies, int startYear, int endYear) {
-
-        if (filteredMovies == null || filteredMovies.isEmpty()) {
-            return filteredMovies;
-        }
-        return filteredMovies.stream()
-                .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
-                .collect(Collectors.toList());
-    }
-
     @FXML
     private void handleStar(ActionEvent event) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
@@ -166,8 +139,6 @@ public class HomeController implements Initializable {
             alert.showAndWait();
         }
     }
-
-
     private void showStarDialog(List<String> actors, long timesFound) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Most popular actor(s)!");
@@ -191,6 +162,45 @@ public class HomeController implements Initializable {
                 .count();
     }
 
+    public int getLongestMovieTitle(List<Movie> filteredMovies) {
+        return filteredMovies.stream()
+                .mapToInt(movie -> movie.getTitle().replace(" ", "").length())
+                .max()
+                .orElse(0);
+    }
+
+    public long countMoviesFrom(List<Movie> filteredMovies, String directors) {
+        if (filteredMovies == null || filteredMovies.isEmpty()) {
+            return 0;
+        }
+        return filteredMovies.stream()
+                .filter(movie -> movie.getDirectors().stream()
+                        .anyMatch(d -> d.toLowerCase().contains(directors.toLowerCase())))
+                .count();
+    }
+    //Added showDirectorDialog to Enis´method
+    public void handleCountMoviesFrom(ActionEvent actionEvent) {
+        Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
+        long movieCount = countMoviesFrom(filteredMovies, searchField.getText());
+        showDirectorDialog(movieCount);
+    }
+    private void showDirectorDialog(long movieCount){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("How many movies has he directed?");
+        alert.setHeaderText(null);
+        alert.setContentText("So far he has directed " + movieCount + " movies, that we know of!");
+        alert.showAndWait();
+    }
+    public List<Movie> getMoviesBetweenYears(List<Movie> filteredMovies, int startYear, int endYear) {
+
+        if (filteredMovies == null || filteredMovies.isEmpty()) {
+            return filteredMovies;
+        }
+        return filteredMovies.stream()
+                .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
+                .collect(Collectors.toList());
+    }
     private void applyFilters() {
         String selectedGenre = genreComboBox.getValue();
         Genres genreFilter = selectedGenre.equals("ALL") ? Genres.ALL : Genres.valueOf(selectedGenre);
@@ -243,13 +253,9 @@ public class HomeController implements Initializable {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
         int movieTitelLength = getLongestMovieTitle(filteredMovies);
+        showDirectorDialog(movieTitelLength);
 
     }
 
-    public void handleCountMoviesFrom(ActionEvent actionEvent) {
-        Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
-        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
-        long movieCount = countMoviesFrom(filteredMovies, searchField.getText());
 
-    }
 }

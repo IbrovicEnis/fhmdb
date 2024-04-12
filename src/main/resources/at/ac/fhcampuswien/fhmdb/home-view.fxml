@@ -29,14 +29,14 @@
          <JFXComboBox fx:id="genreComboBox" focusColor="#ffffff00" promptText="Genre" style="-fx-background-color: #f5c518;-fx-text-fill: #000000" stylesheets="@styles.css" unFocusColor="#4d4d4d00" />
          <VBox alignment="CENTER" maxWidth="300.0">
             <children>
-               <Button fx:id="filterYears" id="filterYears" alignment="CENTER" styleClass="hoverEffect" mnemonicParsing="false" prefWidth="200.0" stylesheets="@styles.css" text="Filter between Years" textAlignment="CENTER">
+               <Button id="filterYears" fx:id="filterYears" alignment="CENTER" mnemonicParsing="false" prefWidth="200.0" styleClass="hoverEffect" stylesheets="@styles.css" text="Filter between Years" textAlignment="CENTER">
                   <font>
                      <Font name="System Bold" size="14.0" />
                   </font></Button>
                <HBox alignment="CENTER">
                   <children>
-                     <TextField fx:id="startingYears" maxWidth="100.0" id="startYear" stylesheets="@styles.css" promptText="Start" />
-                     <TextField fx:id="endingYears" maxWidth="100.0" id="endYear" stylesheets="@styles.css" promptText="End" />
+                     <TextField id="startYear" fx:id="startingYears" maxWidth="100.0" promptText="Start" stylesheets="@styles.css" />
+                     <TextField id="endYear" fx:id="endingYears" maxWidth="100.0" promptText="End" stylesheets="@styles.css" />
                   </children>
                </HBox>
             </children>
@@ -66,7 +66,7 @@
             </font>
          </JFXButton>
 
-         <JFXButton fx:id="countMoviesFrom" onAction="#handleCountMoviesFrom" styleClass="star-button" stylesheets="@styles.css" text="Count Movies">
+         <JFXButton fx:id="countMoviesFrom" onAction="#handleCountMoviesFrom" styleClass="star-button" stylesheets="@styles.css" text="Filmography (count)">
             <font>
                <Font size="16.0" />
             </font>
