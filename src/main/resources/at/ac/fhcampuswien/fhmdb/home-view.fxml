@@ -66,11 +66,21 @@
             </font>
          </JFXButton>
 
-         <JFXButton fx:id="countMoviesFrom" onAction="#handleCountMoviesFrom" styleClass="star-button" stylesheets="@styles.css" text="Filmography (count)">
+         <JFXButton fx:id="countMoviesFrom" onAction="#handleCountMoviesFrom" prefHeight="35.0" prefWidth="177.0" styleClass="star-button" stylesheets="@styles.css" text="Filmography (count)">
             <font>
                <Font size="16.0" />
             </font>
          </JFXButton>
+         <Slider fx:id="minRatingSlider" />
+         <Slider fx:id="maxRatingSlider" />
+         <Label fx:id="ratingLabel" prefHeight="40.0" prefWidth="150.0" styleClass="button-rating-label" stylesheets="@styles.css" textAlignment="CENTER" wrapText="true">
+            <font>
+               <Font name="System Bold" size="14.0" />
+            </font>
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets></Label>
+
       </children>
       <padding>
          <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />

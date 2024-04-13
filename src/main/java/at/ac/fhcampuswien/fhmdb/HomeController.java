@@ -4,6 +4,7 @@ import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXSlider;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
+import javafx.scene.control.Tooltip;
 
 
 public class HomeController implements Initializable {
@@ -39,6 +41,13 @@ public class HomeController implements Initializable {
     public TextField searchField;
     @FXML
     public JFXComboBox<String> genreComboBox;
+    @FXML
+    private Slider minRatingSlider, maxRatingSlider;
+    @FXML
+    private Label ratingLabel;
+
+
+
     private boolean ascendingOrder = true;
 
     public List<Movie> allMovies = Movie.initializeMovies();
@@ -78,7 +87,7 @@ public class HomeController implements Initializable {
         ascendingOrder = !ascendingOrder;
     }
 
-    public List<Movie> filterMovies(List<Movie> moviesList, Genres genre, String searchText) {
+    public List<Movie> filterMovies(List<Movie> moviesList, Genres genre, String searchText, int minRating, int maxRating) {
         if (moviesList == null) {
             return null;
         }
@@ -103,7 +112,12 @@ public class HomeController implements Initializable {
             startYear = Integer.parseInt(years[0].trim());
             endYear = Integer.parseInt(years[1].trim());
             return getMoviesBetweenYears(moviesList, startYear, endYear);
+
         }
+        filteredMovies = filteredMovies.stream()
+                .filter(movie -> movie.getRating() >= minRating && movie.getRating() <= maxRating)
+                .collect(Collectors.toList());
+
         return filteredMovies;
     }
 
@@ -126,7 +140,9 @@ public class HomeController implements Initializable {
     @FXML
     private void handleStar(ActionEvent event) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
-        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
+        int minRating = (int) minRatingSlider.getMin();
+        int maxRating = (int) maxRatingSlider.getMax();
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim(), minRating, maxRating);
         List<String> mostPopularActors = getStar(filteredMovies);
         if (!mostPopularActors.isEmpty()) {
             long timesFound = getActorCount(filteredMovies, mostPopularActors.get(0)); // Get count for one of the tied actors
@@ -177,10 +193,12 @@ public class HomeController implements Initializable {
                         .anyMatch(d -> d.toLowerCase().contains(directors.toLowerCase())))
                 .count();
     }
-    //Added showDirectorDialog to Enis´method
+    //Added showDirectorDialog to Enis´method and lost his name
     public void handleCountMoviesFrom(ActionEvent actionEvent) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
-        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
+        int minRating = (int) minRatingSlider.getMin();
+        int maxRating = (int) maxRatingSlider.getMax();
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim(), minRating, maxRating);
         long movieCount = countMoviesFrom(filteredMovies, searchField.getText());
         showDirectorDialog(movieCount);
     }
@@ -191,6 +209,7 @@ public class HomeController implements Initializable {
         alert.setContentText("So far he has directed " + movieCount + " movies, that we know of!");
         alert.showAndWait();
     }
+    //Cinan´s method
     public List<Movie> getMoviesBetweenYears(List<Movie> filteredMovies, int startYear, int endYear) {
 
         if (filteredMovies == null || filteredMovies.isEmpty()) {
@@ -200,11 +219,16 @@ public class HomeController implements Initializable {
                 .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
                 .collect(Collectors.toList());
     }
+    private void updateRatingLabel(int minRating, int maxRating) {
+        ratingLabel.setText("Rating: " + minRating + " - " + maxRating);
+    }
     private void applyFilters() {
         String selectedGenre = genreComboBox.getValue();
         Genres genreFilter = selectedGenre.equals("ALL") ? Genres.ALL : Genres.valueOf(selectedGenre);
         String searchText = searchField.getText().trim();
-        List<Movie> filteredMovies = filterMovies(allMovies, genreFilter, searchText);
+        int minRating = (int) minRatingSlider.getValue();
+        int maxRating = (int) maxRatingSlider.getValue();
+        List<Movie> filteredMovies = filterMovies(allMovies, genreFilter, searchText, minRating, maxRating);
         observableMovies.clear();
         if (startingYears != null && endingYears != null &&
                 !startingYears.getText().trim().isEmpty() && !endingYears.getText().trim().isEmpty()) {
@@ -239,6 +263,35 @@ public class HomeController implements Initializable {
                 "HISTORY", "HORROR", "MUSICAL", "MYSTERY", "ROMANCE",
                 "SCIENCE_FICTION", "SPORT", "THRILLER", "WAR", "WESTERN"));
         genreComboBox.setValue("ALL");
+
+        minRatingSlider.setMin(1);
+        minRatingSlider.setMax(10);
+        minRatingSlider.setShowTickLabels(true);
+        minRatingSlider.setShowTickMarks(true);minRatingSlider.setMajorTickUnit(1);
+        minRatingSlider.setBlockIncrement(1);
+
+        maxRatingSlider.setMin(1);
+        maxRatingSlider.setMax(10);
+        maxRatingSlider.setShowTickLabels(true);
+        maxRatingSlider.setShowTickMarks(true);
+        maxRatingSlider.setMajorTickUnit(1);
+        maxRatingSlider.setBlockIncrement(1);
+
+        minRatingSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            int minRating = newValue.intValue();
+            updateRatingLabel(minRating, (int) maxRatingSlider.getValue());
+            applyFilters();
+        });
+        maxRatingSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            int maxRating = newValue.intValue();
+            updateRatingLabel((int) minRatingSlider.getValue(), maxRating);
+            applyFilters();
+        });
+        updateRatingLabel((int) minRatingSlider.getValue(), (int) maxRatingSlider.getValue());
+
+        minRatingSlider.setTooltip(new Tooltip("Move slider to set minimum rating"));
+        maxRatingSlider.setTooltip(new Tooltip("Move slider to set maximum rating"));
+
         searchBtn.setOnAction(event -> applyFilters());
         searchField.setOnAction(event -> applyFilters());
         filterYears.setOnAction(event -> applyFilters());
@@ -250,7 +303,9 @@ public class HomeController implements Initializable {
 
     public void handleLongestMvTitel(ActionEvent actionEvent) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
-        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim());
+        int minRating = (int) minRatingSlider.getMin();
+        int maxRating = (int) maxRatingSlider.getMax();
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim(),minRating,maxRating);
         int movieTitelLength = getLongestMovieTitle(filteredMovies);
         showDirectorDialog(movieTitelLength);
 
