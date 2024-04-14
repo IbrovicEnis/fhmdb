@@ -184,6 +184,25 @@ public class HomeController implements Initializable {
                 .max()
                 .orElse(0);
     }
+
+    public void handleLongestMvTitel(ActionEvent actionEvent) {
+        Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
+        int minRating = (int) minRatingSlider.getMin();
+        int maxRating = (int) maxRatingSlider.getMax();
+        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim(),minRating,maxRating);
+        int movieTitelLength = getLongestMovieTitle(filteredMovies);
+        showLongestMovieTitleDialog(movieTitelLength);
+
+    }
+
+    private void showLongestMovieTitleDialog(long movieTitleLength){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("What length does the longest movie title has ?");
+        alert.setHeaderText(null);
+        alert.setContentText("The longest Movie title consists of " + movieTitleLength + " words");
+        alert.showAndWait();
+    }
+
     public long countMoviesFrom(List<Movie> filteredMovies, String directors) {
         if (filteredMovies == null || filteredMovies.isEmpty()) {
             return 0;
@@ -299,16 +318,6 @@ public class HomeController implements Initializable {
 
         initializeMovies();
         Platform.runLater(this::fetchMoviesAsync);
-    }
-
-    public void handleLongestMvTitel(ActionEvent actionEvent) {
-        Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
-        int minRating = (int) minRatingSlider.getMin();
-        int maxRating = (int) maxRatingSlider.getMax();
-        List<Movie> filteredMovies = filterMovies(allMovies, selectedGenre, searchField.getText().trim(),minRating,maxRating);
-        int movieTitelLength = getLongestMovieTitle(filteredMovies);
-        showDirectorDialog(movieTitelLength);
-
     }
 
 
