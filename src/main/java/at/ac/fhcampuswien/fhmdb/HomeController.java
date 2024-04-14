@@ -1,10 +1,11 @@
 package at.ac.fhcampuswien.fhmdb;
 
+import at.ac.fhcampuswien.fhmdb.models.Genres;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.services.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXSlider;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
@@ -54,7 +54,7 @@ public class HomeController implements Initializable {
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     private final MovieAPI movieAPI = new MovieAPI();
 
-    private void fetchMoviesAsync() {
+    /*private void fetchMoviesAsync() {
         Thread fetchThread = new Thread(() -> {
             MovieAPI movieAPI = new MovieAPI();
             try {
@@ -72,7 +72,7 @@ public class HomeController implements Initializable {
         observableMovies.clear();
         observableMovies.addAll(movies);
         movieListView.setItems(observableMovies);
-    }
+    }*/
 
     @FXML
     private void handleSortButton(ActionEvent useSort) {
@@ -166,7 +166,7 @@ public class HomeController implements Initializable {
             tieDisplay.append("* ").append(actor).append(System.lineSeparator());
         }
 
-        tieDisplay.append(String.format("Has been in %d movies!", timesFound));
+        tieDisplay.append(String.format("They have been in %d movie(s) from our list!", timesFound));
 
         alert.setContentText(tieDisplay.toString());
         alert.showAndWait();
@@ -291,6 +291,7 @@ public class HomeController implements Initializable {
 
         maxRatingSlider.setMin(1);
         maxRatingSlider.setMax(10);
+        maxRatingSlider.setValue(10);
         maxRatingSlider.setShowTickLabels(true);
         maxRatingSlider.setShowTickMarks(true);
         maxRatingSlider.setMajorTickUnit(1);
@@ -317,7 +318,7 @@ public class HomeController implements Initializable {
         sortBtn.setOnAction(this::handleSortButton);
 
         initializeMovies();
-        Platform.runLater(this::fetchMoviesAsync);
+        //Platform.runLater(this::fetchMoviesAsync);
     }
 
 

@@ -1,4 +1,4 @@
-package at.ac.fhcampuswien.fhmdb;
+package at.ac.fhcampuswien.fhmdb.models;
 
 public enum Genres {
     ACTION, ADVENTURE, ANIMATION, BIOGRAPHY, COMEDY,

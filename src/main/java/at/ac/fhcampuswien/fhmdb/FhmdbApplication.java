@@ -36,25 +36,4 @@ public class FhmdbApplication extends Application {
     public static void main(String[] args) {
         launch();
     }
-
-   /* private void fetchMoviesAsync() {
-        Thread fetchThread = new Thread(() -> {
-            MovieAPI movieAPI = new MovieAPI();
-            try {
-                List<Movie> movies = movieAPI.getAllMovies(null, null);
-                Platform.runLater(() -> updateUIWithMovies(movies));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        fetchThread.start();
-    }
-
-
-    private void updateUIWithMovies(List<Movie> movies) {
-        ObservableList<Movie> observableMovies = FXCollections.observableArrayList(movies);
-        movieListView.setItems(observableMovies);
-    }
-
-*/
 }

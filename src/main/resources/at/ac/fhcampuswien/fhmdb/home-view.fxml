@@ -71,8 +71,8 @@
                <Font size="16.0" />
             </font>
          </JFXButton>
-         <Slider fx:id="minRatingSlider" />
-         <Slider fx:id="maxRatingSlider" />
+         <Slider fx:id="minRatingSlider" styleClass="button-rating-label" stylesheets="@styles.css"/>
+         <Slider fx:id="maxRatingSlider" styleClass="button-rating-label" stylesheets="@styles.css" />
          <Label fx:id="ratingLabel" prefHeight="40.0" prefWidth="150.0" styleClass="button-rating-label" stylesheets="@styles.css" textAlignment="CENTER" wrapText="true">
             <font>
                <Font name="System Bold" size="14.0" />
