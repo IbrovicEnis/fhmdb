@@ -241,4 +241,23 @@ public class HomeControllerTest {
         assertTrue(filteredMovies.containsAll(Arrays.asList(controller.allMovies.get(0), controller.allMovies.get(1))), "Filtered movies should match the specified years.");
     }
 
+    @Test
+    public void test_GetActorCount_with_multiple_appearances() {
+        long count = controller.getActorCount(controller.allMovies, "Leonardo DiCaprio");
+        assertEquals(2, count);
+    }
+
+    @Test
+    public void test_GetActorCount_with_no_appearances() {
+        long count = controller.getActorCount(controller.allMovies, "Enis Ibrovic");
+        assertEquals(0, count);
+    }
+
+    @Test
+    public void test_GetActorCount_with_a_empty_List() {
+        List<Movie> movies = Collections.emptyList();
+        long count = controller.getActorCount(movies, "Enis Ibrovic");
+        assertEquals(0, count);
+    }
+
 }

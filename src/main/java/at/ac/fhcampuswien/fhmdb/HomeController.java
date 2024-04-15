@@ -66,7 +66,7 @@ public class HomeController implements Initializable {
         ascendingOrder = !ascendingOrder;
     }
 
-    /*
+
         public List<Movie> filterMovies(List<Movie> moviesList, Genres genre, String searchText, int minRating, int maxRating) {
             if (moviesList == null) {
                 return null;
@@ -100,7 +100,7 @@ public class HomeController implements Initializable {
 
             return filteredMovies;
         }
-    */
+
     public List<String> getStar(List<Movie> filteredMovies) {
         if (filteredMovies == null || filteredMovies.isEmpty()) {
             return Collections.emptyList();
@@ -116,6 +116,40 @@ public class HomeController implements Initializable {
                         .map(Map.Entry::getKey)
                         .collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
+    }
+
+    public long getActorCount(List<Movie> movies, String actor) {
+        return movies.stream()
+                .flatMap(movie -> movie.getMainCast().stream())
+                .filter(mainActor -> mainActor.equals(actor))
+                .count();
+    }
+
+    public int getLongestMovieTitle(List<Movie> filteredMovies) {
+        return filteredMovies.stream()
+                .mapToInt(movie -> movie.getTitle().replace(" ", "").length())
+                .max()
+                .orElse(0);
+    }
+
+    public long countMoviesFrom(List<Movie> filteredMovies, String directors) {
+        if (filteredMovies == null || filteredMovies.isEmpty()) {
+            return 0;
+        }
+        return filteredMovies.stream()
+                .filter(movie -> movie.getDirectors().stream()
+                        .anyMatch(d -> d.toLowerCase().contains(directors.toLowerCase())))
+                .count();
+    }
+
+    public List<Movie> getMoviesBetweenYears(List<Movie> filteredMovies, int startYear, int endYear) {
+
+        if (filteredMovies == null || filteredMovies.isEmpty()) {
+            return filteredMovies;
+        }
+        return filteredMovies.stream()
+                .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
+                .collect(Collectors.toList());
     }
 
     @FXML
@@ -150,19 +184,6 @@ public class HomeController implements Initializable {
         alert.showAndWait();
     }
 
-    private long getActorCount(List<Movie> movies, String actor) {
-        return movies.stream()
-                .flatMap(movie -> movie.getMainCast().stream())
-                .filter(mainActor -> mainActor.equals(actor))
-                .count();
-    }
-
-    public int getLongestMovieTitle(List<Movie> filteredMovies) {
-        return filteredMovies.stream()
-                .mapToInt(movie -> movie.getTitle().replace(" ", "").length())
-                .max()
-                .orElse(0);
-    }
 
     public void handleLongestMvTitel(ActionEvent actionEvent) {
         int movieTitelLength = getLongestMovieTitle(observableMovies);
@@ -178,15 +199,6 @@ public class HomeController implements Initializable {
         alert.showAndWait();
     }
 
-    public long countMoviesFrom(List<Movie> filteredMovies, String directors) {
-        if (filteredMovies == null || filteredMovies.isEmpty()) {
-            return 0;
-        }
-        return filteredMovies.stream()
-                .filter(movie -> movie.getDirectors().stream()
-                        .anyMatch(d -> d.toLowerCase().contains(directors.toLowerCase())))
-                .count();
-    }
 
     public void handleCountMoviesFrom(ActionEvent actionEvent) {
         long movieCount = countMoviesFrom(observableMovies, searchField.getText());
@@ -201,15 +213,7 @@ public class HomeController implements Initializable {
         alert.showAndWait();
     }
 
-    public List<Movie> getMoviesBetweenYears(List<Movie> filteredMovies, int startYear, int endYear) {
 
-        if (filteredMovies == null || filteredMovies.isEmpty()) {
-            return filteredMovies;
-        }
-        return filteredMovies.stream()
-                .filter(movie -> movie.getReleaseYear() >= startYear && movie.getReleaseYear() <= endYear)
-                .collect(Collectors.toList());
-    }
 
     private void updateRatingLabel(int minRating, int maxRating) {
         ratingLabel.setText("Rating: " + minRating + " - " + maxRating);
