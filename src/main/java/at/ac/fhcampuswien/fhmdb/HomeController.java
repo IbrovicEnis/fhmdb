@@ -47,32 +47,12 @@ public class HomeController implements Initializable {
     private Label ratingLabel;
 
 
-
     private boolean ascendingOrder = true;
 
     public List<Movie> allMovies = Movie.initializeMovies();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     private final MovieAPI movieAPI = new MovieAPI();
 
-    /*private void fetchMoviesAsync() {
-        Thread fetchThread = new Thread(() -> {
-            MovieAPI movieAPI = new MovieAPI();
-            try {
-                List<Movie> movies = movieAPI.getAllMovies(null, null, null, null);
-                Platform.runLater(() -> updateUIWithMovies(movies));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        fetchThread.start();
-    }
-
-
-    private void updateUIWithMovies(List<Movie> movies) {
-        observableMovies.clear();
-        observableMovies.addAll(movies);
-        movieListView.setItems(observableMovies);
-    }*/
 
     @FXML
     private void handleSortButton(ActionEvent useSort) {
@@ -212,7 +192,7 @@ public class HomeController implements Initializable {
                         .anyMatch(d -> d.toLowerCase().contains(directors.toLowerCase())))
                 .count();
     }
-    //Added showDirectorDialog to Enis´method and lost his name
+
     public void handleCountMoviesFrom(ActionEvent actionEvent) {
         Genres selectedGenre = Genres.valueOf(genreComboBox.getValue());
         int minRating = (int) minRatingSlider.getMin();
@@ -241,27 +221,36 @@ public class HomeController implements Initializable {
     private void updateRatingLabel(int minRating, int maxRating) {
         ratingLabel.setText("Rating: " + minRating + " - " + maxRating);
     }
+
     private void applyFilters() {
-        String selectedGenre = genreComboBox.getValue();
-        Genres genreFilter = selectedGenre.equals("ALL") ? Genres.ALL : Genres.valueOf(selectedGenre);
-        String searchText = searchField.getText().trim();
-        int minRating = (int) minRatingSlider.getValue();
-        int maxRating = (int) maxRatingSlider.getValue();
-        List<Movie> filteredMovies = filterMovies(allMovies, genreFilter, searchText, minRating, maxRating);
-        observableMovies.clear();
-        if (startingYears != null && endingYears != null &&
-                !startingYears.getText().trim().isEmpty() && !endingYears.getText().trim().isEmpty()) {
+        String selectedGenreValue = genreComboBox.getValue();
+        Genres selectedGenre = null;
+
+        if (selectedGenreValue != null && !selectedGenreValue.equals("ALL")) {
             try {
-                int startYear = Integer.parseInt(startingYears.getText().trim());
-                int endYear = Integer.parseInt(endingYears.getText().trim());
-                observableMovies.addAll(getMoviesBetweenYears(filteredMovies, startYear, endYear));
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
+                selectedGenre = Genres.valueOf(selectedGenreValue);
+            } catch (IllegalArgumentException ex) {
+                System.err.println("Invalid genre: " + selectedGenreValue);
+                return;
             }
-        } else {
-            observableMovies.addAll(filteredMovies);
         }
 
+        String searchText = searchField.getText().trim().isEmpty() ? null : searchField.getText().trim();
+
+        String minRating = String.valueOf((int) minRatingSlider.getValue());
+        if (minRatingSlider.getValue() == minRatingSlider.getMin()) {
+            minRating = null;
+        }
+
+        String releaseYear = startingYears.getText().trim().isEmpty() ? null : startingYears.getText().trim();
+
+        try {
+            List<Movie> filteredMovies = movieAPI.getAllMovies(searchText, selectedGenre, releaseYear, minRating);
+            observableMovies.clear();
+            observableMovies.addAll(filteredMovies);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initializeMovies() {
@@ -318,7 +307,6 @@ public class HomeController implements Initializable {
         sortBtn.setOnAction(this::handleSortButton);
 
         initializeMovies();
-        //Platform.runLater(this::fetchMoviesAsync);
     }
 
 

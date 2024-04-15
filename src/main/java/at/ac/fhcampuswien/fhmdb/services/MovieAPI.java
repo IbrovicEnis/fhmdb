@@ -8,6 +8,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,33 +18,30 @@ public class MovieAPI {
     private static final Gson gson = new Gson();
     private String buildURL(String query, Genres genre, String releaseYear, String ratingFrom) {
         StringBuilder urlBuilder = new StringBuilder(BASE_URL);
-        if (query != null || genre != null || releaseYear != null || ratingFrom != null) {
-            urlBuilder.append("?");
-            if (query != null) {
-                urlBuilder.append("query=").append(query);
-                if (genre != null || releaseYear != null || ratingFrom != null) {
-                    urlBuilder.append("&");
-                }
-            }
-            if (genre != null) {
-                urlBuilder.append("genre=").append(genre);
-                if (releaseYear != null || ratingFrom != null) {
-                    urlBuilder.append("&");
-                }
-            }
-            if (releaseYear != null) {
-                urlBuilder.append("releaseYear=").append(releaseYear);
-                if (ratingFrom != null) {
-                    urlBuilder.append("&");
-                }
-            }
-            if (ratingFrom != null) {
-                urlBuilder.append("ratingFrom=").append(ratingFrom);
-            }
+        List<String> parameters = new ArrayList<>();
+
+        if (query != null) {
+            parameters.add("query=" + query);
         }
+        if (genre != null) {
+            parameters.add("genre=" + genre);
+        }
+        if (releaseYear != null) {
+            parameters.add("releaseYear=" + releaseYear);
+        }
+        if (ratingFrom != null) {
+            parameters.add("ratingFrom=" + ratingFrom);
+        }
+
+        if (!parameters.isEmpty()) {
+            urlBuilder.append("?");
+            urlBuilder.append(String.join("&", parameters));
+        }
+
         System.out.println("New API Request: " + urlBuilder.toString());
         return urlBuilder.toString();
     }
+
     public List<Movie> getAllMovies(String query, Genres genre, String releaseYear, String ratingFrom) throws IOException {
         String url = buildURL(query, genre, releaseYear, ratingFrom);
         Request request = new Request.Builder()
