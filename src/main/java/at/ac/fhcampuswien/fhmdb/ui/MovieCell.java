@@ -1,23 +1,25 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
+import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import com.jfoenix.controls.JFXButton;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+
+import java.awt.*;
 
 public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
     private final Label genre = new Label();
     private final Label detail = new Label();
-    private final Label directors = new Label();
-    private final Label releaseYear = new Label();
-    private final Label rating = new Label();
-    private final Label mainCast = new Label();
-    private final VBox layout = new VBox(title, genre, detail, directors, mainCast, releaseYear, rating);
+    private final JFXButton watchlistButton = new JFXButton("+");
+    private final JFXButton moreButton = new JFXButton("Show more!");
+    private final HBox header = new HBox(title, moreButton, watchlistButton);
+    private final VBox layout = new VBox(header, detail, genre);
+    private boolean collapsedDetails = true;
 
     @Override
     protected void updateItem(Movie movie, boolean empty) {
@@ -27,21 +29,6 @@ public class MovieCell extends ListCell<Movie> {
             setText(null);
             setGraphic(null);
         } else {
-            title.setText("");
-            detail.setText("");
-            genre.setText("");
-            directors.setText("");
-            mainCast.setText("");
-            releaseYear.setText("");
-            rating.setText("");
-            layout.setBackground(null);
-            title.getStyleClass().clear();
-            detail.getStyleClass().clear();
-            genre.getStyleClass().clear();
-            directors.getStyleClass().clear();
-            mainCast.getStyleClass().clear();
-            releaseYear.getStyleClass().clear();
-            rating.getStyleClass().clear();
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
             detail.setText(
@@ -50,25 +37,62 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
             );
             genre.setText("Genres: " + String.join(", ", movie.getGenresAsString()));
-            directors.setText("Director: " + String.join(", ", movie.getDirectors()));
-            mainCast.setText("Main Cast: " + String.join(", ", movie.getMainCast()));
-            releaseYear.setText("Release Year: " + movie.getReleaseYear());
-            rating.setText("Rating: " + movie.getRating());
+
+            // Apply styles
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
             genre.getStyleClass().add("text-blue");
-            directors.getStyleClass().add("text-green");
-            mainCast.getStyleClass().add("text-orange");
-            releaseYear.getStyleClass().add("text-purple");
-            rating.getStyleClass().add("text-red");
-            layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
-            title.fontProperty().set(title.getFont().font(20));
+            header.setSpacing(10);
+            VBox.setMargin(header, new Insets(0, 0, 10, 0));
+            watchlistButton.setStyle("-fx-background-color: #f5c518; -fx-font-weight: bold;");
+            moreButton.setStyle("-fx-background-color: #f5c518; -fx-font-weight: bold;");
+
+            // Set layout properties
             detail.setMaxWidth(this.getScene().getWidth() - 60);
             detail.setWrapText(true);
             layout.setPadding(new Insets(10));
-            layout.spacingProperty().set(10);
-            layout.alignmentProperty().set(javafx.geometry.Pos.CENTER_LEFT);
+            layout.setBorder(new Border(new BorderStroke(Color.web("#f5c518"),
+                    BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
             setGraphic(layout);
         }
+    }
+
+    private VBox getDetails() {
+        VBox details = new VBox();
+        Label directors = new Label("Director: " + String.join(", ", getItem().getDirectors()));
+        Label mainCast = new Label("Main Cast: " + String.join(", ", getItem().getMainCast()));
+        Label releaseYear = new Label("Release Year: " + getItem().getReleaseYear());
+        Label rating = new Label("Rating: " + getItem().getRating());
+
+        // Apply styles
+        directors.getStyleClass().add("text-green");
+        mainCast.getStyleClass().add("text-white");
+        releaseYear.getStyleClass().add("text-white");
+        rating.getStyleClass().add("text-white");
+
+        details.getChildren().addAll(directors, mainCast, releaseYear, rating);
+        return details;
+    }
+
+    public MovieCell(ClickEventHandler<Movie> addToWatchlistClicked) {
+        super();
+        HBox.setMargin(watchlistButton, new Insets(0, 10, 0, 10));
+
+        moreButton.setOnMouseClicked(mouseEvent -> {
+            if (collapsedDetails) {
+                layout.getChildren().add(getDetails());
+                collapsedDetails = false;
+                detail.setText("Hide Details");
+            } else {
+                layout.getChildren().remove(3);
+                collapsedDetails = true;
+                detail.setText("Show Details");
+            }
+            setGraphic(layout);
+        });
+
+        watchlistButton.setOnMouseClicked(mouseEvent -> {
+            addToWatchlistClicked.onClick(getItem());
+        });
     }
 }

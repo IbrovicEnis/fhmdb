@@ -3,6 +3,7 @@ package at.ac.fhcampuswien.fhmdb.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Movie {
     private final String title;
@@ -12,6 +13,7 @@ public class Movie {
     private final int releaseYear;
     private final double rating;
     private final List<String> mainCast;
+
 
     public Movie(String title, String description, List<Genres> genres, List<String> directors, int releaseYear, double rating, List<String> mainCast) {
         if (title == null || title.trim().isEmpty()) {
