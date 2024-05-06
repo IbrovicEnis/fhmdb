@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
+import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
 import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
 import com.jfoenix.controls.JFXButton;
 import javafx.geometry.Insets;
@@ -12,95 +13,94 @@ import javafx.scene.paint.Color;
 
 import java.util.stream.Collectors;
 
-public class WatchlistCell extends ListCell<WatchlistMovieEntity> {
+import static at.ac.fhcampuswien.fhmdb.database.MovieEntity.genresToString;
+
+public class WatchlistCell extends ListCell<MovieEntity> {
     private final Label title = new Label();
     private final Label description = new Label();
     private final Label genre = new Label();
-    private final JFXButton detailBtn = new JFXButton("Show Details");
-    private final JFXButton removeBtn = new JFXButton("Remove");
-    private final HBox header = new HBox(title, detailBtn, removeBtn);
+    private final JFXButton moreButton = new JFXButton("See more!");
+    private final JFXButton removeButton = new JFXButton("-");
+    private final HBox header = new HBox(title, moreButton, removeButton);
     private final VBox layout = new VBox(header, description, genre);
     private boolean collapsedDetails = true;
 
     public WatchlistCell(ClickEventHandler removeFromWatchlistClick) {
         super();
-        // color scheme
-        detailBtn.setStyle("-fx-background-color: #f5c518;");
-        HBox.setMargin(detailBtn, new Insets(0, 10, 0, 10));
-        removeBtn.setStyle("-fx-background-color: #f5c518;");
-        title.getStyleClass().add("text-yellow");
-        description.getStyleClass().add("text-white");
-        genre.getStyleClass().add("text-white");
-        genre.setStyle("-fx-font-style: italic");
-        layout.setBackground(new Background(new BackgroundFill(Color.web("#454545"), null, null)));
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setHgrow(title, Priority.ALWAYS);
-        header.setHgrow(detailBtn, Priority.ALWAYS);
-        title.setMaxWidth(Double.MAX_VALUE);
 
-        // layout
+        moreButton.setStyle("-fx-background-color: #f5c518;");
+        VBox.setMargin(header, new Insets(0, 0, 10, 0));
+        HBox.setMargin(moreButton, new Insets(0, 10, 0, 10));
+        removeButton.setStyle("-fx-background-color: #f5c518;");
+        title.getStyleClass().add("text-yellow");
+        title.setStyle("-fx-font-size: 20");
+        description.getStyleClass().add("text-white");
+        genre.getStyleClass().add("text-blue");
+        header.setAlignment(Pos.CENTER_LEFT);
+        title.setMaxWidth(Double.MAX_VALUE);
         title.fontProperty().set(title.getFont().font(20));
         description.setWrapText(true);
         layout.setPadding(new Insets(10));
 
-        detailBtn.setOnMouseClicked(mouseEvent -> {
+        moreButton.setOnMouseClicked(mouseEvent -> {
             if (collapsedDetails) {
                 layout.getChildren().add(getDetails());
                 collapsedDetails = false;
-                detailBtn.setText("Hide Details");
+                moreButton.setText("See less!");
             } else {
                 layout.getChildren().remove(3);
                 collapsedDetails = true;
-                detailBtn.setText("Show Details");
+                moreButton.setText("See more!");
             }
             setGraphic(layout);
         });
-
-        removeBtn.setOnMouseClicked(mouseEvent -> {
-            removeFromWatchlistClick.onClick(getItem());
+        removeButton.setOnMouseClicked(mouseEvent -> {
+            MovieEntity movieEntity = getItem();
+            if (movieEntity != null) {
+                removeFromWatchlistClick.onClick(movieEntity);
+            }
         });
     }
 
     private VBox getDetails() {
         VBox details = new VBox();
         Label releaseYear = new Label("Release Year: " + getItem().getReleaseYear());
-        Label length = new Label("Length: " + getItem().getLengthInMinutes() + " minutes");
+
         Label rating = new Label("Rating: " + getItem().getRating());
 
         releaseYear.getStyleClass().add("text-white");
-        length.getStyleClass().add("text-white");
         rating.getStyleClass().add("text-white");
 
         details.getChildren().add(releaseYear);
         details.getChildren().add(rating);
-        details.getChildren().add(length);
+
         return details;
     }
     @Override
-    protected void updateItem(WatchlistMovieEntity watchlistMovieEntity, boolean empty) {
-        super.updateItem(watchlistMovieEntity, empty);
+    protected void updateItem(MovieEntity movieEntity, boolean empty) {
+        super.updateItem(movieEntity, empty);
 
-        if (empty || watchlistMovieEntity == null) {
+        if (empty || movieEntity == null) {
             setGraphic(null);
             setText(null);
         } else {
             this.getStyleClass().add("movie-cell");
-            title.setText(watchlistMovieEntity.getTitle());
+            title.setText(movieEntity.getTitle());
             description.setText(
-                    watchlistMovieEntity.getDescription() != null
-                            ? watchlistMovieEntity.getDescription()
-                            : "No description available"
+                    movieEntity.getDescription() != null
+                            ? movieEntity.getDescription()
+                            : "Currently no info, but soon ™!"
             );
 
             description.setMaxWidth(this.getScene().getWidth() - 30);
 
-            String genres = watchlistMovieEntity.getGenres()
-                    .stream()
-                    .map(Enum::toString)
-                    .collect(Collectors.joining(", "));
+            String genres = movieEntity.getGenres();
             genre.setText(genres);
+
+            layout.setPadding(new Insets(10));
+            layout.setBorder(new Border(new BorderStroke(Color.web("#f5c518"),
+                    BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
             setGraphic(layout);
         }
     }
 }
-

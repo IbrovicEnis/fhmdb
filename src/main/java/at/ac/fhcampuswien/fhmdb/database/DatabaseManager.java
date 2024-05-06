@@ -3,6 +3,11 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class DatabaseManager {
     private static final String DATABASE_URL = "jdbc:h2:mem:fhmdb";
@@ -12,6 +17,8 @@ public class DatabaseManager {
 
     public void createConnectionSource() throws Exception {
         connectionSource = new JdbcConnectionSource(DATABASE_URL, "username", "password");
+        TableUtils.createTableIfNotExists(connectionSource, WatchlistMovieEntity.class);
+        TableUtils.createTableIfNotExists(connectionSource, MovieEntity.class);
         watchlistDao = DaoManager.createDao(connectionSource, WatchlistMovieEntity.class);
         movieDao = DaoManager.createDao(connectionSource, MovieEntity.class);
 

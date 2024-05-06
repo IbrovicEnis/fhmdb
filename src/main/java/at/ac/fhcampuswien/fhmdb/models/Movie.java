@@ -12,8 +12,8 @@ public class Movie {
     private final List<String> directors;
     private final int releaseYear;
     private final double rating;
+    private String apiId;
     private final List<String> mainCast;
-
 
     public Movie(String title, String description, List<Genres> genres, List<String> directors, int releaseYear, double rating, List<String> mainCast) {
         if (title == null || title.trim().isEmpty()) {
@@ -22,6 +22,7 @@ public class Movie {
         if (genres == null || genres.isEmpty()) {
             throw new IllegalArgumentException("Please assign a proper genre for the movie!");
         }
+        this.apiId = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;
         this.genres = genres;
@@ -62,6 +63,7 @@ public class Movie {
     public List<String> getDirectors() {
         return directors;
     }
+
     public List<String> getMainCast() {
         return mainCast;
     }
@@ -73,6 +75,7 @@ public class Movie {
     public double getRating() {
         return rating;
     }
+
     public List<Genres> getGenres() {
         return genres;
     }
@@ -92,5 +95,13 @@ public class Movie {
         List<Movie> movies = new ArrayList<>();
 
         return movies;
+    }
+
+    public String getApiId() {
+        return apiId;
+    }
+
+    public void setApiId() {
+        this.apiId = UUID.randomUUID().toString();
     }
 }

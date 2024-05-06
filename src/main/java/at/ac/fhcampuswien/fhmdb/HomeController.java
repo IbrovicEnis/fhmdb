@@ -1,22 +1,13 @@
-package at.ac.fhcampuswien.fhmdb.controllers;
+package at.ac.fhcampuswien.fhmdb;
 
-import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
-import at.ac.fhcampuswien.fhmdb.controllerInstances.NewControllerInstances;
-import at.ac.fhcampuswien.fhmdb.database.DataBaseException;
-import at.ac.fhcampuswien.fhmdb.database.WatchlistMovieEntity;
-import at.ac.fhcampuswien.fhmdb.database.WatchlistRepository;
+import at.ac.fhcampuswien.fhmdb.database.*;
 import at.ac.fhcampuswien.fhmdb.models.Genres;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.services.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
-import at.ac.fhcampuswien.fhmdb.ui.UserDialog;
-import at.ac.fhcampuswien.fhmdb.ui.UserIntComp;
+import com.j256.ormlite.dao.Dao;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDrawer;
-import com.jfoenix.controls.JFXHamburger;
-import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,36 +16,32 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.ListView;
+
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.util.Duration;
-import javafx.fxml.FXML;
-import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
+
+import static at.ac.fhcampuswien.fhmdb.database.MovieEntity.*;
 
 
 public class HomeController implements Initializable {
-    @FXML
-    private VBox mainContent;
-    public VBox getMainContent() {
-        return mainContent;
-    }
+
     @FXML
     public JFXButton longestMvTitel;
-    @FXML
-    public TextField startingYears;
+
     @FXML
     public JFXComboBox<String> releaseYearComboBox;
+    @FXML
+    public Button openWatch;
     @FXML
     private ListView<Movie> movieListView;
     @FXML
@@ -69,14 +56,12 @@ public class HomeController implements Initializable {
     private Slider minRatingSlider;
     @FXML
     private Label ratingLabel;
-
+    private DatabaseManager databaseManager = new DatabaseManager();
     private boolean ascendingOrder = true;
 
     public List<Movie> allMovies = Movie.initializeMovies();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     private final MovieAPI movieAPI = new MovieAPI();
-   /* private ObservableList<Movie> movies = FXCollections.observableArrayList();
-    private ObservableList<Movie> watchlist = FXCollections.observableArrayList();*/
 
 
     @FXML
@@ -279,7 +264,6 @@ public class HomeController implements Initializable {
         }
     }
 
-
     private void initializeMovies() {
         try {
             allMovies = movieAPI.getAllMovies(null, null, null, null);
@@ -306,39 +290,60 @@ public class HomeController implements Initializable {
             }
         }).start();
     }
+    private final ClickEventHandler<Movie> onAddToWatchlistClicked = (clickedItem) -> {
+        WatchlistRepository watchlist = new WatchlistRepository(databaseManager);
+        try {
+            boolean isAlreadyInWatchlist = watchlist.isInWatchlist(clickedItem.getApiId());
 
-
-    private final ClickEventHandler<Movie> addToWatchlistClicked = (clickedItem) -> {
-        if (clickedItem instanceof Movie) {
-            Movie movie = (Movie) clickedItem;
-            WatchlistMovieEntity watchlistMovieEntity = new WatchlistMovieEntity(
-                    movie.getTitle(),
-                    movie.getDescription(),
-                    movie.getReleaseYear(),
-                    movie.getGenres(),
-                    movie.getRating());
-            try {
-                WatchlistRepository repository = WatchlistRepository.getInstance();
-                repository.addToWatchlist(watchlistMovieEntity);
-            } catch (DataBaseException e) {
-                e.printStackTrace();
-                UserDialog dialog = new UserDialog("Database Error", "Could not add movie to watchlist");
-                dialog.show();
+            if (!isAlreadyInWatchlist) {
+                MovieEntity movieEntity = MovieEntity.fromMovie(clickedItem);
+                WatchlistMovieEntity watched = new WatchlistMovieEntity(movieEntity.getId(), movieEntity.getApiId());
+                watchlist.addToWatchlist(watched);
+            } else {
+                System.out.println("Film ist bereits in der Watchlist.");
             }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Fehler beim Hinzufügen zum Watchlist: ", e);
         }
     };
-
+    @FXML
+    private void openWatchlist() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("watchlist.fxml"));
+            Parent newPageRoot = loader.load();
+            Stage currentStage = (Stage) openWatch.getScene().getWindow();
+            currentStage.setScene(new Scene(newPageRoot, currentStage.getScene().getWidth(), currentStage.getScene().getHeight()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        initializeMovies();
+        try {
+            databaseManager.createConnectionSource();
+            List<MovieEntity> cachedMovies = fromMovies(observableMovies);
+            MovieRepository movieRepository = new MovieRepository(databaseManager);
+            for (MovieEntity movie : cachedMovies) {
+                movieRepository.addMovie(movie);
+                System.out.println("APIID:"+movie.getApiId());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        observableMovies.clear();
+        observableMovies.addAll(allMovies);
         movieListView.setItems(observableMovies);
-        movieListView.setCellFactory(movieListView -> new MovieCell(addToWatchlistClicked));
+        movieListView.setCellFactory(movieListView -> new MovieCell(onAddToWatchlistClicked));
         genreComboBox.setItems(FXCollections.observableArrayList("ALL", "ACTION", "ADVENTURE", "ANIMATION", "BIOGRAPHY", "COMEDY",
                 "CRIME", "DRAMA", "DOCUMENTARY", "FAMILY", "FANTASY",
                 "HISTORY", "HORROR", "MUSICAL", "MYSTERY", "ROMANCE",
                 "SCIENCE_FICTION", "SPORT", "THRILLER", "WAR", "WESTERN"));
-        genreComboBox.setPromptText("Genre");
+        genreComboBox.setPromptText("Filter by Genre");
         fillReleaseYear(releaseYearComboBox);
-        releaseYearComboBox.setPromptText("Release Year");
+        releaseYearComboBox.setPromptText(" Filter by Release Year");
         minRatingSlider.setMin(1);
         minRatingSlider.setMax(10);
         minRatingSlider.setShowTickLabels(true);
@@ -358,8 +363,5 @@ public class HomeController implements Initializable {
         searchBtn.setOnAction(event -> applyFilters());
         searchField.setOnAction(event -> applyFilters());
         sortBtn.setOnAction(this::handleSortButton);
-
-        initializeMovies();
     }
-
 }

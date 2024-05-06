@@ -62,14 +62,6 @@
             <version>2.2.220</version>
         </dependency>
 
-
-        <!-- ORMLite Core -->
-        <dependency>
-            <groupId>com.j256.ormlite</groupId>
-            <artifactId>ormlite-core</artifactId>
-            <version>6.1</version>
-        </dependency>
-
         <!-- ORMLite JDBC Support -->
         <dependency>
             <groupId>com.j256.ormlite</groupId>

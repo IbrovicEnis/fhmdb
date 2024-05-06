@@ -31,6 +31,7 @@ public class MovieCell extends ListCell<Movie> {
         } else {
             this.getStyleClass().add("movie-cell");
             title.setText(movie.getTitle());
+            title.setStyle("-fx-font-size: 20");
             detail.setText(
                     movie.getDescription() != null
                             ? movie.getDescription()
@@ -38,7 +39,6 @@ public class MovieCell extends ListCell<Movie> {
             );
             genre.setText("Genres: " + String.join(", ", movie.getGenresAsString()));
 
-            // Apply styles
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
             genre.getStyleClass().add("text-blue");
@@ -47,7 +47,6 @@ public class MovieCell extends ListCell<Movie> {
             watchlistButton.setStyle("-fx-background-color: #f5c518; -fx-font-weight: bold;");
             moreButton.setStyle("-fx-background-color: #f5c518; -fx-font-weight: bold;");
 
-            // Set layout properties
             detail.setMaxWidth(this.getScene().getWidth() - 60);
             detail.setWrapText(true);
             layout.setPadding(new Insets(10));
@@ -64,7 +63,6 @@ public class MovieCell extends ListCell<Movie> {
         Label releaseYear = new Label("Release Year: " + getItem().getReleaseYear());
         Label rating = new Label("Rating: " + getItem().getRating());
 
-        // Apply styles
         directors.getStyleClass().add("text-green");
         mainCast.getStyleClass().add("text-white");
         releaseYear.getStyleClass().add("text-white");

@@ -18,10 +18,15 @@ public class MovieRepository {
     }
 
     public void addMovie(MovieEntity movie) throws SQLException {
-        movieDao.create(movie);
+            movieDao.create(movie);
+
+    }
+    public MovieEntity findMovieByApiId(String ApiId) throws SQLException {
+        List<MovieEntity> movies = movieDao.queryBuilder()
+                .where()
+                .eq("ApiId", ApiId)
+                .query();
+        return movies.isEmpty() ? null : movies.get(0);
     }
 
-    public void deleteMovie(long id) throws SQLException {
-        movieDao.deleteById(id);
-    }
 }

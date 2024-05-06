@@ -9,13 +9,9 @@
 .background-light-black {
     -fx-background-color: #454545;
 }
-.movie-cell-buttons{
-    -fx-background-color: #f5c518;
-    -fx-font-weight: bold;
-}
+
 .text-yellow {
     -fx-text-fill: #f5c518;
-    -fx-font-size: 20px;
     -fx-font-weight:bold;
 }
 .text-green {
@@ -55,7 +51,7 @@
 }
 .text-blue {
     -fx-text-fill: #6d91ff;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-font-weight:bold;
 }
 .jfx-combo-box{
@@ -136,23 +132,5 @@
     -fx-alignment: CENTER;
     -fx-text-fill: black;
     -fx-font-size: 16px;
-    -fx-font-weight:bold;
-}
-.bold {
-    -fx-font-weight: bold;
-}
-.jfx-hamburger {
-    -fx-background-color: black;
-}
-
-.jfx-hamburger StackPane {
-    -fx-background-color: #f5c518;
-}
-.drawer-style {
-    -fx-background-color: black;
-}
-.text-yellow2 {
-    -fx-text-fill: #f5c518;
-    -fx-font-size: 14px;
     -fx-font-weight:bold;
 }

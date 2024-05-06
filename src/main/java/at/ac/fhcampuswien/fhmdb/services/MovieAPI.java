@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MovieAPI {
-    private static final String BASE_URL = "https://prog2.fh-campuswien.ac.at/movies";
+    private static final String BASE_URL = "http://prog2.fh-campuswien.ac.at/movies";
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new Gson();
     private String buildURL(String query, Genres genre, String releaseYear, String ratingFrom) {
@@ -55,7 +55,14 @@ public class MovieAPI {
             }
             String responseData = response.body().string();
             Movie[] moviesArray = gson.fromJson(responseData, Movie[].class);
-            return Arrays.asList(moviesArray);
+            List<Movie> movies = new ArrayList<>(Arrays.asList(moviesArray));
+
+            for (Movie movie : movies) {
+                if (movie.getApiId() == null || movie.getApiId().trim().isEmpty()) {
+                    movie.setApiId();
+                }
+            }
+            return movies;
         }
     }
 }
