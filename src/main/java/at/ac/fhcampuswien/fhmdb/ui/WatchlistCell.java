@@ -11,6 +11,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 import static at.ac.fhcampuswien.fhmdb.database.MovieEntity.genresToString;
@@ -57,7 +58,11 @@ public class WatchlistCell extends ListCell<MovieEntity> {
         removeButton.setOnMouseClicked(mouseEvent -> {
             MovieEntity movieEntity = getItem();
             if (movieEntity != null) {
-                removeFromWatchlistClick.onClick(movieEntity);
+                try {
+                    removeFromWatchlistClick.onClick(movieEntity);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

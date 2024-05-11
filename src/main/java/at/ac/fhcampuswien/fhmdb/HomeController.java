@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.database.*;
+import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Genres;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.services.MovieAPI;
@@ -78,39 +80,39 @@ public class HomeController implements Initializable {
     }
 
 
-        public List<Movie> filterMovies(List<Movie> moviesList, Genres genre, String searchText, int minRating, int maxRating) {
-            if (moviesList == null) {
-                return null;
-            }
-            List<Movie> filteredMovies = new ArrayList<>();
-            for (Movie movie : moviesList) {
-                boolean matchesGenre = genre == null || genre == Genres.ALL || movie.getGenres().contains(genre);
-                boolean matchesDirector = movie.getDirectors().stream()
-                        .anyMatch(director -> director.toLowerCase().contains(searchText.toLowerCase()));
-                boolean matchesSearchText = searchText == null || searchText.isEmpty()
-                        || movie.getTitle().toLowerCase().contains(searchText.toLowerCase())
-                        || matchesDirector
-                        || movie.getDescription().toLowerCase().contains(searchText.toLowerCase());
-
-                if (matchesGenre && matchesSearchText) {
-                    filteredMovies.add(movie);
-                }
-            }
-            int startYear;
-            int endYear;
-            if (searchText != null && searchText.matches("\\d{4}-\\d{4}")) {
-                String[] years = searchText.split("-");
-                startYear = Integer.parseInt(years[0].trim());
-                endYear = Integer.parseInt(years[1].trim());
-                return getMoviesBetweenYears(moviesList, startYear, endYear);
-
-            }
-            filteredMovies = filteredMovies.stream()
-                    .filter(movie -> movie.getRating() >= minRating && movie.getRating() <= maxRating)
-                    .collect(Collectors.toList());
-
-            return filteredMovies;
+    public List<Movie> filterMovies(List<Movie> moviesList, Genres genre, String searchText, int minRating, int maxRating) {
+        if (moviesList == null) {
+            return null;
         }
+        List<Movie> filteredMovies = new ArrayList<>();
+        for (Movie movie : moviesList) {
+            boolean matchesGenre = genre == null || genre == Genres.ALL || movie.getGenres().contains(genre);
+            boolean matchesDirector = movie.getDirectors().stream()
+                    .anyMatch(director -> director.toLowerCase().contains(searchText.toLowerCase()));
+            boolean matchesSearchText = searchText == null || searchText.isEmpty()
+                    || movie.getTitle().toLowerCase().contains(searchText.toLowerCase())
+                    || matchesDirector
+                    || movie.getDescription().toLowerCase().contains(searchText.toLowerCase());
+
+            if (matchesGenre && matchesSearchText) {
+                filteredMovies.add(movie);
+            }
+        }
+        int startYear;
+        int endYear;
+        if (searchText != null && searchText.matches("\\d{4}-\\d{4}")) {
+            String[] years = searchText.split("-");
+            startYear = Integer.parseInt(years[0].trim());
+            endYear = Integer.parseInt(years[1].trim());
+            return getMoviesBetweenYears(moviesList, startYear, endYear);
+
+        }
+        filteredMovies = filteredMovies.stream()
+                .filter(movie -> movie.getRating() >= minRating && movie.getRating() <= maxRating)
+                .collect(Collectors.toList());
+
+        return filteredMovies;
+    }
 
     public List<String> getStar(List<Movie> filteredMovies) {
         if (filteredMovies == null || filteredMovies.isEmpty()) {
@@ -259,7 +261,7 @@ public class HomeController implements Initializable {
             List<Movie> filteredMovies = movieAPI.getAllMovies(searchText, selectedGenre, selectedReleaseYearValue, minRating);
             observableMovies.clear();
             observableMovies.addAll(filteredMovies);
-        } catch (IOException e) {
+        } catch (MovieApiException e) {
             e.printStackTrace();
         }
     }
@@ -268,7 +270,7 @@ public class HomeController implements Initializable {
         try {
             allMovies = movieAPI.getAllMovies(null, null, null, null);
             observableMovies.addAll(allMovies);
-        } catch (IOException e) {
+        } catch (MovieApiException e) {
             e.printStackTrace();
         }
     }
@@ -285,7 +287,7 @@ public class HomeController implements Initializable {
                         .collect(Collectors.toList());
                 years.add(0, "ALL");
                 Platform.runLater(() -> comboBox.setItems(FXCollections.observableArrayList(years)));
-            } catch (IOException e) {
+            } catch (MovieApiException e) {
                 e.printStackTrace();
             }
         }).start();
@@ -303,7 +305,7 @@ public class HomeController implements Initializable {
                 System.out.println("Film ist bereits in der Watchlist.");
             }
 
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             e.printStackTrace();
             throw new RuntimeException("Fehler beim Hinzufügen zum Watchlist: ", e);
         }

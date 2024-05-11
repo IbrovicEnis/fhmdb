@@ -1,6 +1,7 @@
 package at.ac.fhcampuswien.fhmdb;
 
 import at.ac.fhcampuswien.fhmdb.database.*;
+import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import at.ac.fhcampuswien.fhmdb.ui.WatchlistCell;
@@ -47,8 +48,7 @@ public class WatchlistController implements Initializable {
                 }
             }
             observableMovies.setAll(allMoviesEntity);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
         }
     }
 
@@ -71,7 +71,7 @@ public class WatchlistController implements Initializable {
                 allMoviesEntity.removeIf(movie -> movie.getApiId().equals(clickedItem.getApiId()));
                 observableMovies.setAll(allMoviesEntity);
             });
-        } catch (SQLException e) {
+        } catch (DatabaseException e) {
             e.printStackTrace();
             throw new RuntimeException("Fehler beim Entfernen aus der Watchlist: ", e);
         }

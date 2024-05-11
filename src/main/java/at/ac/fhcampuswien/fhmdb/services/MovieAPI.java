@@ -1,5 +1,6 @@
 package at.ac.fhcampuswien.fhmdb.services;
 
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Genres;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.google.gson.Gson;
@@ -42,7 +43,7 @@ public class MovieAPI {
         return urlBuilder.toString();
     }
 
-    public List<Movie> getAllMovies(String query, Genres genre, String releaseYear, String ratingFrom) throws IOException {
+    public List<Movie> getAllMovies(String query, Genres genre, String releaseYear, String ratingFrom) throws MovieApiException  {
         String url = buildURL(query, genre, releaseYear, ratingFrom);
         Request request = new Request.Builder()
                 .url(url)
@@ -51,7 +52,7 @@ public class MovieAPI {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code " + response);
+                throw new IOException("Unexpected response code: " + response);
             }
             String responseData = response.body().string();
             Movie[] moviesArray = gson.fromJson(responseData, Movie[].class);
@@ -63,6 +64,8 @@ public class MovieAPI {
                 }
             }
             return movies;
+        } catch (IOException ioe) {
+            throw new MovieApiException("Failed to fetch movies from API", ioe);
         }
     }
 }

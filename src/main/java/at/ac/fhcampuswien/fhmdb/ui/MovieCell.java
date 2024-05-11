@@ -1,6 +1,8 @@
 package at.ac.fhcampuswien.fhmdb.ui;
 
 import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
+import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.jfoenix.controls.JFXButton;
 import javafx.geometry.Insets;
@@ -10,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.awt.*;
+import java.sql.SQLException;
 
 public class MovieCell extends ListCell<Movie> {
     private final Label title = new Label();
@@ -90,7 +93,11 @@ public class MovieCell extends ListCell<Movie> {
         });
 
         watchlistButton.setOnMouseClicked(mouseEvent -> {
-            addToWatchlistClicked.onClick(getItem());
+            try {
+                addToWatchlistClicked.onClick(getItem());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 }

@@ -12,6 +12,7 @@ module at.ac.fhcampuswien.fhmdb {
     exports at.ac.fhcampuswien.fhmdb;
     exports at.ac.fhcampuswien.fhmdb.models;
     exports at.ac.fhcampuswien.fhmdb.services;
+    exports at.ac.fhcampuswien.fhmdb.exceptions;
     exports at.ac.fhcampuswien.fhmdb.database to ormlite.jdbc;
     opens at.ac.fhcampuswien.fhmdb.services to javafx.fxml;
     opens at.ac.fhcampuswien.fhmdb.models to com.google.gson, javafx.fxml;
