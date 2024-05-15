@@ -27,7 +27,7 @@ public class FhmdbApplication extends Application {
         scene.getStylesheets().add(Objects.requireNonNull(FhmdbApplication.class.getResource("styles.css")).toExternalForm());
         stage.setTitle("FHMDb");
         stage.setScene(scene);
-        Image applicationIcon = new Image(getClass().getResourceAsStream("/at/ac/fhcampuswien/fhmdb/app_icon.png"));
+        Image applicationIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/at/ac/fhcampuswien/fhmdb/app_icon.png")));
         stage.getIcons().add(applicationIcon);
         stage.show();
 

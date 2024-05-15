@@ -265,7 +265,7 @@ public class HomeController implements Initializable {
         }
     }
 
-    private void initializeMovies() {
+    private void initializeMovies(){
         try {
             if (checkIfMoviesExistInDatabase()) {
                 allMovies = loadMoviesFromDatabase();
@@ -276,8 +276,8 @@ public class HomeController implements Initializable {
                 System.out.println("Loaded movies from API and saved to database.");
             }
             observableMovies.addAll(allMovies);
-        } catch (MovieApiException | SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException | MovieApiException sqle) {
+            showErrorDialog("Initialization Error", sqle.getMessage());
         }
     }
 
@@ -286,25 +286,26 @@ public class HomeController implements Initializable {
         return movieRepository.getMovieCount() > 0;
     }
 
-    private List<Movie> loadMoviesFromDatabase() throws SQLException {
+    private List<Movie> loadMoviesFromDatabase(){
         MovieRepository movieRepository = new MovieRepository(databaseManager);
         List<MovieEntity> movieEntities = null;
         try {
             movieEntities = movieRepository.getAllMovies();
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+        } catch (DatabaseException dbe) {
+            showErrorDialog("Initialization Error", dbe.getMessage());
         }
         return toMovies(movieEntities);
     }
 
-    private void saveMoviesToDatabase(List<Movie> movies) throws SQLException {
+
+    private void saveMoviesToDatabase(List<Movie> movies) {
         MovieRepository movieRepository = new MovieRepository(databaseManager);
         for (Movie movie : movies) {
             MovieEntity movieEntity = MovieEntity.fromMovie(movie);
             try {
                 movieRepository.addMovie(movieEntity);
-            } catch (DatabaseException e) {
-                throw new RuntimeException(e);
+            } catch (DatabaseException dbe) {
+                showErrorDialog("Error saving Movies to Database", dbe.getMessage());
             }
         }
     }
@@ -321,8 +322,8 @@ public class HomeController implements Initializable {
                         .collect(Collectors.toList());
                 years.add(0, "ALL");
                 Platform.runLater(() -> comboBox.setItems(FXCollections.observableArrayList(years)));
-            } catch (MovieApiException e) {
-                e.printStackTrace();
+            } catch (MovieApiException mae) {
+                showErrorDialog("Error getting Movies from API", mae.getMessage());
             }
         }).start();
     }
@@ -339,9 +340,8 @@ public class HomeController implements Initializable {
                 System.out.println("Movie is already in Watchlist.");
             }
 
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new RuntimeException("There was an Error: ", e);
+        } catch (DatabaseException dbe) {
+            showErrorDialog("Error populating the Database", dbe.getMessage());
         }
     };
 
@@ -361,8 +361,8 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             databaseManager.createConnectionSource();
-        } catch (DatabaseException e) {
-            throw new RuntimeException(e);
+        } catch (DatabaseException dbe) {
+            showErrorDialog("Error creating connection to the Database", dbe.getMessage());
         }
         initializeMovies();
         movieListView.setItems(observableMovies); // Direktes Setzen der Filme in die ListView
@@ -393,5 +393,13 @@ public class HomeController implements Initializable {
         searchBtn.setOnAction(event -> applyFilters());
         searchField.setOnAction(event -> applyFilters());
         sortBtn.setOnAction(this::handleSortButton);
+    }
+
+    private void showErrorDialog(String header, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
