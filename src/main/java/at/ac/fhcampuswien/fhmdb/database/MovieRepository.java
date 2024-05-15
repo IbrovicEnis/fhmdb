@@ -1,16 +1,19 @@
 package at.ac.fhcampuswien.fhmdb.database;
+
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import com.j256.ormlite.dao.Dao;
 
 
 import java.sql.SQLException;
 import java.util.List;
+
 public class MovieRepository {
     private Dao<MovieEntity, Long> movieDao;
 
     public MovieRepository(DatabaseManager dbManager) {
         this.movieDao = dbManager.getMovieDao();
     }
+
     public List<MovieEntity> getAllMovies() throws DatabaseException {
         try {
             return movieDao.queryForAll();
@@ -35,16 +38,21 @@ public class MovieRepository {
         }
 
     }
-    public MovieEntity findMovieByApiId(String ApiId) throws DatabaseException {
+
+    public MovieEntity findMovieByApiId(String apiId) throws DatabaseException {
         try {
             List<MovieEntity> movies = movieDao.queryBuilder()
                     .where()
-                    .eq("ApiId", ApiId)
+                    .eq("apiId", apiId)
                     .query();
             return movies.isEmpty() ? null : movies.get(0);
-        } catch (SQLException sqle){
+        } catch (SQLException sqle) {
             throw new DatabaseException("Failed to find movie in the database", sqle);
         }
+    }
+
+    public int getMovieCount() throws SQLException {
+        return (int) movieDao.countOf();
     }
 
 }

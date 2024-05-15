@@ -85,6 +85,7 @@ public class MovieEntity {
         return movieEntities.stream()
                 .map(movieEntity -> new Movie(
                         movieEntity.getTitle(),
+                        movieEntity.getApiId(),
                         movieEntity.getDescription(),
                         stringToGenres(movieEntity.getGenres()),
                         null,
@@ -98,6 +99,7 @@ public class MovieEntity {
         if (movieEntity == null) return null;
         return new Movie(
                 movieEntity.getTitle(),
+                movieEntity.getApiId(),
                 movieEntity.getDescription(),
                 stringToGenres(movieEntity.getGenres()),
                 null,

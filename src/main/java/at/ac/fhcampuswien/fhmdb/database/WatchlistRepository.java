@@ -1,4 +1,5 @@
 package at.ac.fhcampuswien.fhmdb.database;
+
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
@@ -13,6 +14,7 @@ public class WatchlistRepository {
     public WatchlistRepository(DatabaseManager dbManager) {
         this.watchlistDao = dbManager.getWatchlistDao();
     }
+
     public List<WatchlistMovieEntity> getWatchlist() throws DatabaseException {
         try {
             return watchlistDao.queryForAll();
@@ -38,6 +40,7 @@ public class WatchlistRepository {
             throw new DatabaseException("Failed to remove movie from watchlist", sqle);
         }
     }
+
     public boolean isInWatchlist(String apiId) throws DatabaseException {
         try {
             QueryBuilder<WatchlistMovieEntity, Long> queryBuilder = watchlistDao.queryBuilder();

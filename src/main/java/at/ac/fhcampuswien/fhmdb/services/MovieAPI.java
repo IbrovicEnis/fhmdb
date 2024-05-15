@@ -17,6 +17,7 @@ public class MovieAPI {
     private static final String BASE_URL = "http://prog2.fh-campuswien.ac.at/movies";
     private static final OkHttpClient client = new OkHttpClient();
     private static final Gson gson = new Gson();
+
     private String buildURL(String query, Genres genre, String releaseYear, String ratingFrom) {
         StringBuilder urlBuilder = new StringBuilder(BASE_URL);
         List<String> parameters = new ArrayList<>();
@@ -43,7 +44,7 @@ public class MovieAPI {
         return urlBuilder.toString();
     }
 
-    public List<Movie> getAllMovies(String query, Genres genre, String releaseYear, String ratingFrom) throws MovieApiException  {
+    public List<Movie> getAllMovies(String query, Genres genre, String releaseYear, String ratingFrom) throws MovieApiException {
         String url = buildURL(query, genre, releaseYear, ratingFrom);
         Request request = new Request.Builder()
                 .url(url)

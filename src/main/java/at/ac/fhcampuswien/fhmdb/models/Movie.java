@@ -15,14 +15,14 @@ public class Movie {
     private String apiId;
     private final List<String> mainCast;
 
-    public Movie(String title, String description, List<Genres> genres, List<String> directors, int releaseYear, double rating, List<String> mainCast) {
+    public Movie(String title, String apiId, String description, List<Genres> genres, List<String> directors, int releaseYear, double rating, List<String> mainCast) {
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Please enter a proper movie title!");
         }
         if (genres == null || genres.isEmpty()) {
             throw new IllegalArgumentException("Please assign a proper genre for the movie!");
         }
-        this.apiId = UUID.randomUUID().toString();
+        this.apiId = apiId;
         this.title = title;
         this.description = description;
         this.genres = genres;

@@ -227,7 +227,6 @@ public class HomeController implements Initializable {
     }
 
 
-
     private void updateRatingLabel(int minRating, int maxRating) {
         ratingLabel.setText("Rating: " + minRating + " - " + maxRating);
     }
@@ -268,10 +267,45 @@ public class HomeController implements Initializable {
 
     private void initializeMovies() {
         try {
-            allMovies = movieAPI.getAllMovies(null, null, null, null);
+            if (checkIfMoviesExistInDatabase()) {
+                allMovies = loadMoviesFromDatabase();
+                System.out.println("Loaded movies from database.");
+            } else {
+                allMovies = movieAPI.getAllMovies(null, null, null, null);
+                saveMoviesToDatabase(allMovies);
+                System.out.println("Loaded movies from API and saved to database.");
+            }
             observableMovies.addAll(allMovies);
-        } catch (MovieApiException e) {
+        } catch (MovieApiException | SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean checkIfMoviesExistInDatabase() throws SQLException {
+        MovieRepository movieRepository = new MovieRepository(databaseManager);
+        return movieRepository.getMovieCount() > 0;
+    }
+
+    private List<Movie> loadMoviesFromDatabase() throws SQLException {
+        MovieRepository movieRepository = new MovieRepository(databaseManager);
+        List<MovieEntity> movieEntities = null;
+        try {
+            movieEntities = movieRepository.getAllMovies();
+        } catch (DatabaseException e) {
+            throw new RuntimeException(e);
+        }
+        return toMovies(movieEntities);
+    }
+
+    private void saveMoviesToDatabase(List<Movie> movies) throws SQLException {
+        MovieRepository movieRepository = new MovieRepository(databaseManager);
+        for (Movie movie : movies) {
+            MovieEntity movieEntity = MovieEntity.fromMovie(movie);
+            try {
+                movieRepository.addMovie(movieEntity);
+            } catch (DatabaseException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -292,24 +326,25 @@ public class HomeController implements Initializable {
             }
         }).start();
     }
+
     private final ClickEventHandler<Movie> onAddToWatchlistClicked = (clickedItem) -> {
         WatchlistRepository watchlist = new WatchlistRepository(databaseManager);
         try {
             boolean isAlreadyInWatchlist = watchlist.isInWatchlist(clickedItem.getApiId());
-
             if (!isAlreadyInWatchlist) {
                 MovieEntity movieEntity = MovieEntity.fromMovie(clickedItem);
                 WatchlistMovieEntity watched = new WatchlistMovieEntity(movieEntity.getId(), movieEntity.getApiId());
                 watchlist.addToWatchlist(watched);
             } else {
-                System.out.println("Film ist bereits in der Watchlist.");
+                System.out.println("Movie is already in Watchlist.");
             }
 
         } catch (DatabaseException e) {
             e.printStackTrace();
-            throw new RuntimeException("Fehler beim Hinzufügen zum Watchlist: ", e);
+            throw new RuntimeException("There was an Error: ", e);
         }
     };
+
     @FXML
     private void openWatchlist() {
         try {
@@ -321,23 +356,16 @@ public class HomeController implements Initializable {
             e.printStackTrace();
         }
     }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        initializeMovies();
         try {
             databaseManager.createConnectionSource();
-            List<MovieEntity> cachedMovies = fromMovies(observableMovies);
-            MovieRepository movieRepository = new MovieRepository(databaseManager);
-            for (MovieEntity movie : cachedMovies) {
-                movieRepository.addMovie(movie);
-                System.out.println("APIID:"+movie.getApiId());
-            }
-        } catch (Exception e) {
+        } catch (DatabaseException e) {
             throw new RuntimeException(e);
         }
-        observableMovies.clear();
-        observableMovies.addAll(allMovies);
-        movieListView.setItems(observableMovies);
+        initializeMovies();
+        movieListView.setItems(observableMovies); // Direktes Setzen der Filme in die ListView
         movieListView.setCellFactory(movieListView -> new MovieCell(onAddToWatchlistClicked));
         genreComboBox.setItems(FXCollections.observableArrayList("ALL", "ACTION", "ADVENTURE", "ANIMATION", "BIOGRAPHY", "COMEDY",
                 "CRIME", "DRAMA", "DOCUMENTARY", "FAMILY", "FANTASY",
@@ -345,7 +373,7 @@ public class HomeController implements Initializable {
                 "SCIENCE_FICTION", "SPORT", "THRILLER", "WAR", "WESTERN"));
         genreComboBox.setPromptText("Filter by Genre");
         fillReleaseYear(releaseYearComboBox);
-        releaseYearComboBox.setPromptText(" Filter by Release Year");
+        releaseYearComboBox.setPromptText("Filter by Release Year");
         minRatingSlider.setMin(1);
         minRatingSlider.setMax(10);
         minRatingSlider.setShowTickLabels(true);

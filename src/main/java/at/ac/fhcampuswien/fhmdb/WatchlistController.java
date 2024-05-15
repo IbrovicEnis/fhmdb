@@ -29,9 +29,10 @@ import static at.ac.fhcampuswien.fhmdb.database.MovieEntity.fromMovie;
 public class WatchlistController implements Initializable {
     @FXML
     public JFXListView<MovieEntity> movieListView;
-    public List<MovieEntity> allMoviesEntity = new ArrayList<>(); // Initialisierung hier
+    public List<MovieEntity> allMoviesEntity = new ArrayList<>();
     private final ObservableList<MovieEntity> observableMovies = FXCollections.observableArrayList();
-    private DatabaseManager databaseManager;
+    private final DatabaseManager databaseManager = new DatabaseManager();
+    ;
     @FXML
     public Button openHome;
 
@@ -63,6 +64,7 @@ public class WatchlistController implements Initializable {
             e.printStackTrace();
         }
     }
+
     private final ClickEventHandler<MovieEntity> onRemoveFromWatchlistClicked = (clickedItem) -> {
         WatchlistRepository watchlist = new WatchlistRepository(databaseManager);
         try {
@@ -76,9 +78,9 @@ public class WatchlistController implements Initializable {
             throw new RuntimeException("Fehler beim Entfernen aus der Watchlist: ", e);
         }
     };
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        databaseManager = new DatabaseManager();
         try {
             databaseManager.createConnectionSource();
             initializeMovies();
