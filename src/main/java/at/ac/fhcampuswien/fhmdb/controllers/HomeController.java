@@ -1,5 +1,6 @@
-package at.ac.fhcampuswien.fhmdb;
+package at.ac.fhcampuswien.fhmdb.controllers;
 
+import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.*;
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
@@ -348,7 +349,7 @@ public class HomeController implements Initializable {
     @FXML
     private void openWatchlist() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("watchlist.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/at/ac/fhcampuswien/fhmdb/watchlist.fxml"));
             Parent newPageRoot = loader.load();
             Stage currentStage = (Stage) openWatch.getScene().getWindow();
             currentStage.setScene(new Scene(newPageRoot, currentStage.getScene().getWidth(), currentStage.getScene().getHeight()));
@@ -356,6 +357,7 @@ public class HomeController implements Initializable {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -371,9 +373,9 @@ public class HomeController implements Initializable {
                 "CRIME", "DRAMA", "DOCUMENTARY", "FAMILY", "FANTASY",
                 "HISTORY", "HORROR", "MUSICAL", "MYSTERY", "ROMANCE",
                 "SCIENCE_FICTION", "SPORT", "THRILLER", "WAR", "WESTERN"));
-        genreComboBox.setPromptText("Filter by Genre");
+        genreComboBox.setPromptText("Genre");
         fillReleaseYear(releaseYearComboBox);
-        releaseYearComboBox.setPromptText("Filter by Release Year");
+        releaseYearComboBox.setPromptText("Release Year");
         minRatingSlider.setMin(1);
         minRatingSlider.setMax(10);
         minRatingSlider.setShowTickLabels(true);

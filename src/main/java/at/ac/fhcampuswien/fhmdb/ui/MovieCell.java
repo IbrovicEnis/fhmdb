@@ -6,6 +6,7 @@ import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
 import com.jfoenix.controls.JFXButton;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.*;
@@ -41,18 +42,19 @@ public class MovieCell extends ListCell<Movie> {
                             : "No description available"
             );
             genre.setText("Genres: " + String.join(", ", movie.getGenresAsString()));
-
             title.getStyleClass().add("text-yellow");
             detail.getStyleClass().add("text-white");
             genre.getStyleClass().add("text-blue");
-            header.setSpacing(10);
-            VBox.setMargin(header, new Insets(0, 0, 10, 0));
+            genre.setStyle("-fx-font-family: 'Times New Roman'; -fx-font-style: italic");
+            HBox.setMargin(moreButton, new Insets(0, 10, 0, 10));
+            header.setAlignment(Pos.CENTER_LEFT);
+
             watchlistButton.setStyle("-fx-background-color: #f5c518; -fx-font-weight: bold;");
             moreButton.setStyle("-fx-background-color: #f5c518; -fx-font-weight: bold;");
 
             detail.setMaxWidth(this.getScene().getWidth() - 60);
             detail.setWrapText(true);
-            layout.setPadding(new Insets(10));
+            layout.setPadding(new Insets(20));
             layout.setBorder(new Border(new BorderStroke(Color.web("#f5c518"),
                     BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
             setGraphic(layout);
@@ -77,7 +79,7 @@ public class MovieCell extends ListCell<Movie> {
 
     public MovieCell(ClickEventHandler<Movie> addToWatchlistClicked) {
         super();
-        HBox.setMargin(watchlistButton, new Insets(0, 10, 0, 10));
+
 
         moreButton.setOnMouseClicked(mouseEvent -> {
             if (collapsedDetails) {

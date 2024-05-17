@@ -1,32 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import com.jfoenix.controls.JFXListView?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
-<?import com.jfoenix.controls.JFXButton?>
-<VBox style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.WatchlistController">
+<VBox style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.WatchlistController">
     <HBox alignment="CENTER" style="-fx-background-color: #f5c518;">
         <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="FHMDb">
+            <Label alignment="CENTER" contentDisplay="CENTER" styleClass="text-with-border" stylesheets="@styles.css" text="FHMDb">
                 <font>
-                    <Font name="System Bold" size="30.0" />
+                    <Font name="Times New Roman" size="30.0" />
                 </font>
                 <HBox.margin>
                     <Insets left="50.0" />
                 </HBox.margin>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="openHome" alignment="CENTER" onAction="#openHome" mnemonicParsing="false" style="-fx-background-color: black;" text="Home" textFill="#f5c518">
+            <Button fx:id="openHome" alignment="CENTER" mnemonicParsing="false" onAction="#openHome" prefHeight="40.0" prefWidth="94.0" styleClass="watchlist-button" stylesheets="@styles.css" text="Home">
                 <font>
-                    <Font name="System Bold" size="18.0" />
+                    <Font name="Times New Roman Bold" size="18.0" />
                 </font>
             </Button>
+
         </children>
         <VBox.margin>
             <Insets />

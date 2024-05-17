@@ -1,5 +1,6 @@
-package at.ac.fhcampuswien.fhmdb;
+package at.ac.fhcampuswien.fhmdb.controllers;
 
+import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.*;
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
@@ -56,7 +57,7 @@ public class WatchlistController implements Initializable {
     @FXML
     private void openHome() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("home-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/at/ac/fhcampuswien/fhmdb/home-view.fxml"));
             Parent newPageRoot = loader.load();
             Stage currentStage = (Stage) openHome.getScene().getWindow();
             currentStage.setScene(new Scene(newPageRoot, currentStage.getScene().getWidth(), currentStage.getScene().getHeight()));
@@ -88,7 +89,7 @@ public class WatchlistController implements Initializable {
             movieListView.setCellFactory(movieListView -> new WatchlistCell(onRemoveFromWatchlistClicked));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Fehler bei der Initialisierung der Datenverbindung", e);
+            throw new RuntimeException("Error in initialization of a data connection", e);
         }
     }
 }
