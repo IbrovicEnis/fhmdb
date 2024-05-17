@@ -39,8 +39,6 @@ public class MovieAPI {
             urlBuilder.append("?");
             urlBuilder.append(String.join("&", parameters));
         }
-
-        System.out.println("New API Request: " + urlBuilder.toString());
         return urlBuilder.toString();
     }
 

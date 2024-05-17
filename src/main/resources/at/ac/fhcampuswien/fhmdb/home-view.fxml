@@ -35,7 +35,7 @@
    </HBox>
    <!-- Header -->
 
-   <HBox spacing="5.0" styleClass="background-black" stylesheets="@styles.css">
+   <HBox alignment="CENTER" spacing="5.0" styleClass="background-black" stylesheets="@styles.css">
       <children>
          <JFXButton fx:id="sortBtn" onAction="#handleSortButton" styleClass="star-button" stylesheets="@styles.css" text="Sort (asc)" textFill="black">
             <font>
