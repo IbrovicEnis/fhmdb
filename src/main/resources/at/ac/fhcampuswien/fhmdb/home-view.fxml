@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.*?>
+<?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox style="-fx-background-color: black;" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.HomeController">
+<VBox style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.HomeController">
    <HBox alignment="CENTER" style="-fx-background-color: #f5c518;">
       <children>
          <Label alignment="CENTER" contentDisplay="CENTER" styleClass="text-with-border" stylesheets="@styles.css" text="FHMDb">
@@ -46,7 +47,7 @@
                <Font size="16.0" />
             </font>
          </TextField>
-         <JFXButton fx:id="searchBtn" styleClass="hoverEffect" stylesheets="@styles.css" text="🔎">
+         <JFXButton fx:id="searchBtn" styleClass="button-rating-label" stylesheets="@styles.css" text="🔎">
             <font>
                <Font size="16.0" />
             </font>
@@ -59,13 +60,17 @@
          <JFXComboBox fx:id="releaseYearComboBox" focusColor="#ffffff00" promptText="Release Year" style="-fx-background-color: #f5c518; -fx-text-fill: black; -fx-alignment: center;" styleClass="bold" stylesheets="@styles.css" unFocusColor="#4d4d4d00" />
 
          <Slider fx:id="minRatingSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minorTickCount="1" prefHeight="13.0" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" styleClass="button-rating-label" stylesheets="@styles.css" />
-         <Label fx:id="ratingLabel" styleClass="button-rating-label" stylesheets="@styles.css" textAlignment="CENTER" wrapText="true">
+         <Label fx:id="ratingLabel" styleClass="button-rating-label" textAlignment="CENTER" wrapText="true">
             <font>
                <Font name="System Bold" size="14.0" />
             </font>
             <opaqueInsets>
                <Insets />
             </opaqueInsets>
+            <stylesheets>
+               <URL value="@styles.css" />
+               <URL value="@styles.css" />
+            </stylesheets>
          </Label>
       </children>
       <padding>
