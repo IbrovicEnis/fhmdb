@@ -51,8 +51,14 @@ public class MovieRepository {
         }
     }
 
-    public int getMovieCount() throws SQLException {
-        return (int) movieDao.countOf();
+    public int getMovieCount() throws DatabaseException {
+        int movieCounter;
+        try{
+            movieCounter = (int) movieDao.countOf();
+        } catch (SQLException sqle){
+            throw new DatabaseException("Failed to find movie in the database", sqle);
+        }
+        return movieCounter;
     }
 
 }

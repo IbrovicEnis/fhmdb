@@ -15,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
@@ -37,21 +38,18 @@ public class WatchlistController implements Initializable {
     @FXML
     public Button openHome;
 
-    private void initializeMovies() {
-        try {
-            WatchlistRepository watchlist = new WatchlistRepository(databaseManager);
-            MovieRepository movieRepository = new MovieRepository(databaseManager);
-            List<WatchlistMovieEntity> moviesInWatchList = watchlist.getWatchlist();
+    private void initializeMovies() throws DatabaseException {
+        WatchlistRepository watchlist = new WatchlistRepository(databaseManager);
+        MovieRepository movieRepository = new MovieRepository(databaseManager);
+        List<WatchlistMovieEntity> moviesInWatchList = watchlist.getWatchlist();
 
-            for (WatchlistMovieEntity movie : moviesInWatchList) {
-                MovieEntity movieEntity = movieRepository.findMovieByApiId(movie.getApiId());
-                if (movieEntity != null) {
-                    allMoviesEntity.add(movieEntity);
-                }
+        for (WatchlistMovieEntity movie : moviesInWatchList) {
+            MovieEntity movieEntity = movieRepository.findMovieByApiId(movie.getApiId());
+            if (movieEntity != null) {
+                allMoviesEntity.add(movieEntity);
             }
-            observableMovies.setAll(allMoviesEntity);
-        } catch (Exception e) {
         }
+        observableMovies.setAll(allMoviesEntity);
     }
 
     @FXML
@@ -74,9 +72,8 @@ public class WatchlistController implements Initializable {
                 allMoviesEntity.removeIf(movie -> movie.getApiId().equals(clickedItem.getApiId()));
                 observableMovies.setAll(allMoviesEntity);
             });
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Fehler beim Entfernen aus der Watchlist: ", e);
+        } catch (DatabaseException dbe) {
+            showErrorDialog("Error removing from Database", dbe.getMessage());
         }
     };
 
@@ -85,11 +82,20 @@ public class WatchlistController implements Initializable {
         try {
             databaseManager.createConnectionSource();
             initializeMovies();
-            movieListView.setItems(observableMovies);
-            movieListView.setCellFactory(movieListView -> new WatchlistCell(onRemoveFromWatchlistClicked));
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error in initialization of a data connection", e);
+        } catch (DatabaseException dbe) {
+            showErrorDialog("Error creating connection to the Database", dbe.getMessage());
         }
+
+        movieListView.setItems(observableMovies);
+        movieListView.setCellFactory(movieListView -> new WatchlistCell(onRemoveFromWatchlistClicked));
+
+    }
+
+    private void showErrorDialog(String header, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

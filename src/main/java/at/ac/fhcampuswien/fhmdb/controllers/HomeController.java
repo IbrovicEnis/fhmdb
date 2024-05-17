@@ -76,7 +76,6 @@ public class HomeController implements Initializable {
             observableMovies.sort(Comparator.comparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER).reversed());
             sortBtn.setText("Sort (asc)");
         }
-
         ascendingOrder = !ascendingOrder;
     }
 
@@ -261,8 +260,8 @@ public class HomeController implements Initializable {
             List<Movie> filteredMovies = movieAPI.getAllMovies(searchText, selectedGenre, selectedReleaseYearValue, minRating);
             observableMovies.clear();
             observableMovies.addAll(filteredMovies);
-        } catch (MovieApiException e) {
-            e.printStackTrace();
+        } catch (MovieApiException mae) {
+            showErrorDialog("Error accessing API", mae.getMessage());
         }
     }
 
@@ -277,14 +276,20 @@ public class HomeController implements Initializable {
                 System.out.println("Loaded movies from API and saved to database.");
             }
             observableMovies.addAll(allMovies);
-        } catch (SQLException | MovieApiException sqle) {
+        } catch (MovieApiException sqle) {
             showErrorDialog("Initialization Error", sqle.getMessage());
         }
     }
 
-    private boolean checkIfMoviesExistInDatabase() throws SQLException {
+    private boolean checkIfMoviesExistInDatabase() {
         MovieRepository movieRepository = new MovieRepository(databaseManager);
-        return movieRepository.getMovieCount() > 0;
+        boolean movieExists=false;
+        try{
+            movieExists = movieRepository.getMovieCount() > 0;
+        } catch (DatabaseException dbe){
+            showErrorDialog("Error counting the movies in the database", dbe.getMessage());
+        }
+        return movieExists;
     }
 
     private List<Movie> loadMoviesFromDatabase(){
