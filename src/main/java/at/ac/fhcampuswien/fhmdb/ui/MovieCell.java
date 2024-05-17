@@ -85,14 +85,16 @@ public class MovieCell extends ListCell<Movie> {
             if (collapsedDetails) {
                 layout.getChildren().add(getDetails());
                 collapsedDetails = false;
-                detail.setText("Hide Details");
+                moreButton.setText("Hide Details");
             } else {
                 layout.getChildren().remove(3);
                 collapsedDetails = true;
-                detail.setText("Show Details");
+                moreButton.setText("Show Details");
             }
+
             setGraphic(layout);
         });
+
 
         watchlistButton.setOnMouseClicked(mouseEvent -> {
             try {

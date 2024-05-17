@@ -47,14 +47,16 @@ public class WatchlistCell extends ListCell<MovieEntity> {
             if (collapsedDetails) {
                 layout.getChildren().add(getDetails());
                 collapsedDetails = false;
-                moreButton.setText("See less!");
+                moreButton.setText("Hide Details");
             } else {
                 layout.getChildren().remove(3);
                 collapsedDetails = true;
-                moreButton.setText("See more!");
+                moreButton.setText("Show Details");
             }
+
             setGraphic(layout);
         });
+
         removeButton.setOnMouseClicked(mouseEvent -> {
             MovieEntity movieEntity = getItem();
             if (movieEntity != null) {

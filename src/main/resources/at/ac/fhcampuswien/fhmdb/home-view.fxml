@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.HomeController">
+<VBox style="-fx-background-color: black;" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.fhcampuswien.fhmdb.controllers.HomeController">
    <HBox alignment="CENTER" style="-fx-background-color: #f5c518;">
       <children>
          <Label alignment="CENTER" contentDisplay="CENTER" styleClass="text-with-border" stylesheets="@styles.css" text="FHMDb">
