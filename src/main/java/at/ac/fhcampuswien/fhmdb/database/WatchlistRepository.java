@@ -14,13 +14,16 @@ import java.util.List;
 
 public class WatchlistRepository implements Observable {
     private Dao<WatchlistMovieEntity, Long> watchlistDao;
-    private List<Observer> observers;
+
+    private List<Observer> observers = new ArrayList<>();
+
     private List<Movie> watchlist;
 
     public WatchlistRepository() {
         this.observers = new ArrayList<>();
         this.watchlist = new ArrayList<>();
     }
+
 
     @Override
     public void addObserver(Observer observer) {
@@ -38,17 +41,6 @@ public class WatchlistRepository implements Observable {
             observer.update(message);
         }
     }
-
-    public void addMovie(Movie movie) {
-        this.watchlist.add(movie);
-        notifyObservers("Movie added to watchlist: " + movie.getTitle());
-    }
-
-    public void removeMovie(Movie movie) {
-        this.watchlist.remove(movie);
-        notifyObservers("Movie removed from watchlist: " + movie.getTitle());
-    }
-
     public WatchlistRepository(DatabaseManager dbManager) {
         this.watchlistDao = dbManager.getWatchlistDao();
     }
@@ -64,6 +56,7 @@ public class WatchlistRepository implements Observable {
     public void addToWatchlist(WatchlistMovieEntity movie) throws DatabaseException {
         try {
             watchlistDao.createIfNotExists(movie);
+            notifyObservers("Movie added to watchlist!");
         } catch (SQLException sqle) {
             throw new DatabaseException("Failed to add movie to watchlist", sqle);
         }
@@ -74,6 +67,7 @@ public class WatchlistRepository implements Observable {
             DeleteBuilder<WatchlistMovieEntity, Long> deleteBuilder = watchlistDao.deleteBuilder();
             deleteBuilder.where().eq("apiId", apiId);
             deleteBuilder.delete();
+            notifyObservers("Movie removed from watchlist!");
         } catch (SQLException sqle) {
             throw new DatabaseException("Failed to remove movie from watchlist", sqle);
         }
