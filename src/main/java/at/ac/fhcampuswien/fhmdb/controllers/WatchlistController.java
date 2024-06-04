@@ -4,6 +4,7 @@ import at.ac.fhcampuswien.fhmdb.ClickEventHandler;
 import at.ac.fhcampuswien.fhmdb.database.*;
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.patterns.Observer;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import at.ac.fhcampuswien.fhmdb.ui.WatchlistCell;
 import com.jfoenix.controls.JFXListView;
@@ -28,7 +29,7 @@ import java.util.ResourceBundle;
 
 import static at.ac.fhcampuswien.fhmdb.database.MovieEntity.fromMovie;
 
-public class WatchlistController implements Initializable {
+public class WatchlistController implements Initializable, Observer {
     @FXML
     public JFXListView<MovieEntity> movieListView;
     public List<MovieEntity> allMoviesEntity = new ArrayList<>();
@@ -37,6 +38,13 @@ public class WatchlistController implements Initializable {
     ;
     @FXML
     public Button openHome;
+
+
+    @Override
+    public void update(String message) {
+        System.out.println("WatchlistController received update: " + message);
+        // Handle the update accordingly, like refreshing the watchlist view
+    }
 
     private void initializeMovies() throws DatabaseException {
         WatchlistRepository watchlist = new WatchlistRepository(databaseManager);

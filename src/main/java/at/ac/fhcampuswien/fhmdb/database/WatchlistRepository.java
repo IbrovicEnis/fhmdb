@@ -1,15 +1,53 @@
 package at.ac.fhcampuswien.fhmdb.database;
 
 import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
+import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.patterns.Observable;
+import at.ac.fhcampuswien.fhmdb.patterns.Observer;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class WatchlistRepository {
+public class WatchlistRepository implements Observable {
     private Dao<WatchlistMovieEntity, Long> watchlistDao;
+    private List<Observer> observers;
+    private List<Movie> watchlist;
+
+    public WatchlistRepository() {
+        this.observers = new ArrayList<>();
+        this.watchlist = new ArrayList<>();
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        this.observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        this.observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(String message) {
+        for (Observer observer : observers) {
+            observer.update(message);
+        }
+    }
+
+    public void addMovie(Movie movie) {
+        this.watchlist.add(movie);
+        notifyObservers("Movie added to watchlist: " + movie.getTitle());
+    }
+
+    public void removeMovie(Movie movie) {
+        this.watchlist.remove(movie);
+        notifyObservers("Movie removed from watchlist: " + movie.getTitle());
+    }
 
     public WatchlistRepository(DatabaseManager dbManager) {
         this.watchlistDao = dbManager.getWatchlistDao();

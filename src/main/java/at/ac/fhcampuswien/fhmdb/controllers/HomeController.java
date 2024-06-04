@@ -6,6 +6,7 @@ import at.ac.fhcampuswien.fhmdb.exceptions.DatabaseException;
 import at.ac.fhcampuswien.fhmdb.exceptions.MovieApiException;
 import at.ac.fhcampuswien.fhmdb.models.Genres;
 import at.ac.fhcampuswien.fhmdb.models.Movie;
+import at.ac.fhcampuswien.fhmdb.patterns.Observer;
 import at.ac.fhcampuswien.fhmdb.services.MovieAPI;
 import at.ac.fhcampuswien.fhmdb.ui.MovieCell;
 import com.j256.ormlite.dao.Dao;
@@ -36,7 +37,7 @@ import at.ac.fhcampuswien.fhmdb.database.MovieEntity;
 import static at.ac.fhcampuswien.fhmdb.database.MovieEntity.*;
 
 
-public class HomeController implements Initializable {
+public class HomeController implements Initializable, Observer {
 
     @FXML
     public JFXButton longestMvTitel;
@@ -65,7 +66,10 @@ public class HomeController implements Initializable {
     public List<Movie> allMovies = Movie.initializeMovies();
     private final ObservableList<Movie> observableMovies = FXCollections.observableArrayList();
     private final MovieAPI movieAPI = new MovieAPI();
-
+    @Override
+    public void update(String message) {
+        System.out.println("HomeController received update: " + message);
+    }
 
     @FXML
     private void handleSortButton(ActionEvent useSort) {
