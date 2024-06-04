@@ -43,7 +43,6 @@ public class WatchlistController implements Initializable, Observer {
     @Override
     public void update(String message) {
         System.out.println("WatchlistController received update: " + message);
-        // Handle the update accordingly, like refreshing the watchlist view
     }
 
     private void initializeMovies() throws DatabaseException {
